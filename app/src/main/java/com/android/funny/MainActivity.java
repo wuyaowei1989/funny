@@ -68,7 +68,7 @@ public class MainActivity extends BaseActivity {
 
         mBottomBar.addItem(new BottomBarTab(this, R.drawable.ic_news, "新闻"))
                 .addItem(new BottomBarTab(this, R.drawable.ic_video, "视频"))
-                .addItem(new BottomBarTab(this, R.drawable.ic_jiandan, "煎蛋"))
+                .addItem(new BottomBarTab(this, R.drawable.ic_gaoxiao, "搞笑"))
                 .addItem(new BottomBarTab(this, R.drawable.ic_my, "我的"));
         mBottomBar.setOnTabSelectedListener(new BottomBar.OnTabSelectedListener() {
             @Override

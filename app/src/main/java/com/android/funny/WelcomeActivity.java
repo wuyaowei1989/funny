@@ -47,12 +47,12 @@ public class WelcomeActivity extends BaseActivity {
 
     @Override
     public void bindView(View view, Bundle savedInstanceState) {
-        ImageLoaderUtil.LoadImage(this, "http://api.dujin.org/bing/1920.php", ivAd);
+        ImageLoaderUtil.LoadImage(this, "https://picsum.photos/1920/1080/?random", ivAd);
 
-        mCompositeDisposable.add(countDown(3).doOnSubscribe(new Consumer<Disposable>() {
+        mCompositeDisposable.add(countDown(5).doOnSubscribe(new Consumer<Disposable>() {
             @Override
             public void accept(@NonNull Disposable disposable) throws Exception {
-                tvSkip.setText("跳过 4");
+                tvSkip.setText("跳过 6");
             }
         }).subscribeWith(new DisposableObserver<Integer>() {
             @Override
