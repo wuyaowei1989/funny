@@ -7,6 +7,7 @@ import android.widget.FrameLayout;
 import com.android.funny.component.ApplicationComponent;
 import com.android.funny.ui.base.BaseActivity;
 import com.android.funny.ui.base.SupportFragment;
+import com.android.funny.ui.imageclassify.ImageClassifyFragment;
 import com.android.funny.ui.jandan.JanDanFragment;
 import com.android.funny.ui.personal.PersonalFragment;
 import com.android.funny.ui.news.NewsFragment;
@@ -49,7 +50,7 @@ public class MainActivity extends BaseActivity {
     public void bindView(View view, Bundle savedInstanceState) {
         StatusBarUtil.setTranslucentForImageViewInFragment(MainActivity.this, 0, null);
         if (savedInstanceState == null) {
-            mFragments[0] = NewsFragment.newInstance();
+            mFragments[0] = ImageClassifyFragment.newInstance();
             mFragments[1] = VideoFragment.newInstance();
             mFragments[2] = JanDanFragment.newInstance();
             mFragments[3] = PersonalFragment.newInstance();

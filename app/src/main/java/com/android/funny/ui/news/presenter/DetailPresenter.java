@@ -1,7 +1,5 @@
 package com.android.funny.ui.news.presenter;
 
-import android.util.Log;
-
 import com.android.funny.bean.NewsDetail;
 import com.android.funny.net.BaseObserver;
 import com.android.funny.net.NewsApi;
@@ -117,7 +115,6 @@ public class DetailPresenter extends BasePresenter<DetailContract.View> implemen
 
                     @Override
                     public void onFail(Throwable e) {
-                        Log.i(TAG, "onFail: " + e.getMessage().toString());
                         if (!action.equals(NewsApi.ACTION_UP)) {
                             mView.loadData(null);
                         } else {

@@ -1,5 +1,6 @@
 package com.android.funny.component;
 
+import com.android.funny.ui.imageclassify.ImageClassifyFragment;
 import com.android.funny.ui.jandan.JdDetailFragment;
 import com.android.funny.ui.news.ArticleReadActivity;
 import com.android.funny.ui.news.ImageBrowseActivity;
@@ -33,4 +34,6 @@ public interface HttpComponent {
     void inject(NewsFragment newsFragment);
 
     void inject(SinaVideoFragment sinaVideoFragment);
+
+    void inject(ImageClassifyFragment imageClassifyFragment);
 }

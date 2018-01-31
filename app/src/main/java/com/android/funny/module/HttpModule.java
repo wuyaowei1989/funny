@@ -3,6 +3,8 @@ package com.android.funny.module;
 import com.android.funny.BuildConfig;
 import com.android.funny.MyApp;
 import com.android.funny.net.ApiConstants;
+import com.android.funny.net.BaiduAiApi;
+import com.android.funny.net.BaiduAiApiService;
 import com.android.funny.net.JanDanApi;
 import com.android.funny.net.JanDanApiService;
 import com.android.funny.net.NewsApi;
@@ -101,6 +103,18 @@ public class HttpModule {
         return SinaApi.getInstance(retrofitBuilder
                 .baseUrl(ApiConstants.sSinaApi)
                 .build().create(SinaApiService.class));
+    }
+
+    @Provides
+    BaiduAiApi provideBaiduAiApis(OkHttpClient.Builder builder) {
+        Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .client(builder.build());
+
+        return BaiduAiApi.getInstance(retrofitBuilder
+                .baseUrl(ApiConstants.sBaiduAiApi)
+                .build().create(BaiduAiApiService.class));
     }
 
 }

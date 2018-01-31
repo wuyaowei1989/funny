@@ -72,6 +72,7 @@ dependencies {
     compile rootProject.ext.dependencies["okhttp-logging-interceptor"]
 
     compile rootProject.ext.dependencies["litepal"]
+    compile 'com.baidu.aip:java-sdk:4.0.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
 }

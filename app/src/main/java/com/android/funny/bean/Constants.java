@@ -75,4 +75,13 @@ public class Constants {
     //豆瓣key
     public static final String DOUBAN_ID = "0b2bdeda43b5688921839c8ecb20399b";
 
+    //百度AI AK
+    public static final String BAIDU_AI_AK = "GfxfhkomklhgKrkK654Rywti";
+
+    //百度AI SK
+    public static final String BAIDU_AI_SK = "rCrf0BAe3kXsHpzl3cTVN1GAstq23EN2";
+
+    //百度
+    public static final String BAIDU_GRANT_TYPE = "client_credentials";
+
 }
