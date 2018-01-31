@@ -70,6 +70,7 @@ dependencies {
     compile rootProject.ext.dependencies["androideventbus"]
     compile rootProject.ext.dependencies["gif-drawable"]
     compile rootProject.ext.dependencies["okhttp-logging-interceptor"]
+    compile rootProject.ext.dependencies["rxpermissions"]
 
     compile rootProject.ext.dependencies["litepal"]
     compile 'com.baidu.aip:java-sdk:4.0.0'

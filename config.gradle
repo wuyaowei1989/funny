@@ -76,5 +76,6 @@ ext {
             "retrolambda"           : "me.tatarka:gradle-retrolambda:3.7.0",
 
             "okhttp-logging-interceptor": "com.squareup.okhttp3:logging-interceptor:${dependVersion.okhttp}",
+            "rxpermissions"             : "com.tbruyelle.rxpermissions2:rxpermissions:0.9.3@aar",
     ]
 }
