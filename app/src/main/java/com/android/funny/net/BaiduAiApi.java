@@ -44,7 +44,19 @@ public class BaiduAiApi {
      * @return JSONObject
      */
 
-    public Observable<Object> dishesRecognition(String token) {
-        return mService.dishesRecognition(token);
+    public Observable<Object> dishesRecognition(String token, String image, int top_num, float filter_threshold) {
+        return mService.dishesRecognition(token, image, top_num, filter_threshold);
+    }
+
+    /**
+     * 车辆识别接口
+     * @param token
+     * @param image
+     * @param top_num
+     * @return
+     * 该请求用于检测一张车辆图片的具体车型。即对于输入的一张图片（可正常解码，且长宽比适宜），输出图片的车辆品牌及型号。
+     */
+    public Observable<Object> carDetect(String token, String image, int top_num) {
+        return mService.carDetect(token, image, top_num);
     }
 }

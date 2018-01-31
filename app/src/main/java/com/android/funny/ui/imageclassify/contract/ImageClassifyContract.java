@@ -12,6 +12,8 @@ public interface ImageClassifyContract {
         void loadAccessTokenData(BaiduAccessTokenBean o);
 
         void loadAccessTokenDataFail(String s);
+
+        void loaDishDetectData(Object o);
     }
 
     interface Presenter extends BaseContract.BasePresenter<View> {
@@ -23,5 +25,15 @@ public interface ImageClassifyContract {
          * @param sk
          */
         void getAccessToken(String ak, String sk);
+
+        /**
+         * 菜品识别
+         * @param access_token
+         * @param img
+         * @param top_num
+         * @param filter_threshold
+         * 该请求用于菜品识别。即对于输入的一张图片（可正常解码，且长宽比适宜），输出图片的菜品名称、卡路里信息、置信度。
+         */
+        void dishDetect(String access_token, String img, int top_num, float filter_threshold);
     }
 }

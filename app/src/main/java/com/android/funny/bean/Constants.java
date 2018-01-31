@@ -75,6 +75,8 @@ public class Constants {
     //豆瓣key
     public static final String DOUBAN_ID = "0b2bdeda43b5688921839c8ecb20399b";
 
+    //百度AI APP ID
+    public static final String BAIDU_AI_APPID = "10763813";
     //百度AI AK
     public static final String BAIDU_AI_AK = "GfxfhkomklhgKrkK654Rywti";
 

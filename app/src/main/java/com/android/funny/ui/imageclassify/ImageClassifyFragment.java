@@ -17,6 +17,11 @@ import com.android.funny.component.DaggerHttpComponent;
 import com.android.funny.ui.base.BaseFragment;
 import com.android.funny.ui.imageclassify.contract.ImageClassifyContract;
 import com.android.funny.ui.imageclassify.presenter.ImageClassifyPresenter;
+import com.baidu.aip.imageclassify.AipImageClassify;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,7 +67,14 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
 
     @Override
     public void bindView(View view, Bundle savedInstanceState) {
+        AipImageClassify client = new AipImageClassify(Constants.BAIDU_AI_APPID, Constants.BAIDU_AI_AK, Constants.BAIDU_AI_SK);
+        client.setConnectionTimeoutInMillis(2000);
+        client.setSocketTimeoutInMillis(60000);
 
+        HashMap<String, String> options = new HashMap<String, String>();
+        options.put("top_num", "3");
+        String image = "src/test.jpg";
+        JSONObject res = client.dishDetect(image, options);
     }
 
     @Override
@@ -88,7 +100,6 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.image_layout:
-                mPresenter.getAccessToken(Constants.BAIDU_AI_AK, Constants.BAIDU_AI_SK);
                 break;
             case R.id.upload_img_tv:
                 break;
@@ -103,5 +114,10 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
     @Override
     public void loadAccessTokenDataFail(String s) {
         Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void loaDishDetectData(Object o) {
+
     }
 }

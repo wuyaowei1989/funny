@@ -40,4 +40,23 @@ public class ImageClassifyPresenter extends BasePresenter<ImageClassifyContract.
                     }
                 });
     }
+
+    @Override
+    public void dishDetect(String access_token, String img, int top_num, float filter_threshold) {
+        mBaiduAiApi.dishesRecognition(access_token, img, top_num, filter_threshold)
+                .compose(RxSchedulers.<Object>applySchedulers())
+                .compose(mView.<Object>bindToLife())
+                .subscribe(new BaseObserver<Object>() {
+                    @Override
+                    public void onSuccess(Object itemBeen) {
+
+                        mView.loaDishDetectData(itemBeen);
+                    }
+
+                    @Override
+                    public void onFail(Throwable e) {
+                        //
+                    }
+                });
+    }
 }
