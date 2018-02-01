@@ -69,8 +69,10 @@ public class BoredPicAdapter extends BaseMultiItemQuickAdapter<JdDetailBean.Comm
             Log.i(TAG, "convert: author=" + commentsBean.getComment_author() + " content= " + commentsBean.getText_content());
         }
 
-        viewHolder.setVisible(R.id.img_gif, commentsBean.getPics().get(0).contains("gif"));
-        viewHolder.setVisible(R.id.progress, commentsBean.getPics().get(0).contains("gif"));
+        if(commentsBean.getPics().size() > 0) {
+            viewHolder.setVisible(R.id.img_gif, commentsBean.getPics().get(0).contains("gif"));
+            viewHolder.setVisible(R.id.progress, commentsBean.getPics().get(0).contains("gif"));
+        }
         viewHolder.setText(R.id.tv_like, commentsBean.getVote_negative());
         viewHolder.setText(R.id.tv_unlike, commentsBean.getVote_positive());
         viewHolder.setText(R.id.tv_comment_count, commentsBean.getSub_comment_count());
@@ -111,20 +113,22 @@ public class BoredPicAdapter extends BaseMultiItemQuickAdapter<JdDetailBean.Comm
                         ImageBrowseActivity.launch(mContext, imageUrls, 0);
                     }
                 });
-                ImageLoaderUtil.LoadImage(mContext, commentsBean.getPics().get(0),
-                        new DrawableImageViewTarget((ImageView) viewHolder.getView(R.id.img)) {
-                            @Override
-                            public void onResourceReady(Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                                super.onResourceReady(resource, transition);
-                                int pmWidth = ContextUtils.getSreenWidth(MyApp.getContext());
-                                int pmHeight = ContextUtils.getSreenHeight(MyApp.getContext());
-                                float sal = (float) pmHeight / pmWidth;
-                                int actualHeight = (int) Math.ceil(sal * resource.getIntrinsicWidth());
-                                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, actualHeight);
-                                viewHolder.getView(R.id.img).setLayoutParams(params);
-                                viewHolder.setVisible(R.id.img_gif, false);
-                            }
-                        });
+                if (commentsBean.getPics().size() > 0) {
+                    ImageLoaderUtil.LoadImage(mContext, commentsBean.getPics().get(0),
+                            new DrawableImageViewTarget((ImageView) viewHolder.getView(R.id.img)) {
+                                @Override
+                                public void onResourceReady(Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                                    super.onResourceReady(resource, transition);
+                                    int pmWidth = ContextUtils.getSreenWidth(MyApp.getContext());
+                                    int pmHeight = ContextUtils.getSreenHeight(MyApp.getContext());
+                                    float sal = (float) pmHeight / pmWidth;
+                                    int actualHeight = (int) Math.ceil(sal * resource.getIntrinsicWidth());
+                                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, actualHeight);
+                                    viewHolder.getView(R.id.img).setLayoutParams(params);
+                                    viewHolder.setVisible(R.id.img_gif, false);
+                                }
+                            });
+                }
                 viewHolder.getView(R.id.img_share).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

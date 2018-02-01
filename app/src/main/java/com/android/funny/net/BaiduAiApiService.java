@@ -1,6 +1,7 @@
 package com.android.funny.net;
 
 import com.android.funny.bean.BaiduAccessTokenBean;
+import com.android.funny.bean.DishDetectBean;
 
 import io.reactivex.Observable;
 import retrofit2.http.Field;
@@ -22,14 +23,19 @@ public interface BaiduAiApiService {
 
     @FormUrlEncoded
     @POST("rest/2.0/image-classify/v2/dish")
-    Observable<Object> dishesRecognition(@Query("access_token") String access_token,
-                                         @Field("image") String image,
-                                         @Field("top_num") int top_num,
-                                         @Field("filter_threshold") float filter_threshold);
+    Observable<DishDetectBean> dishesRecognition(@Query("access_token") String access_token,
+                                                 @Field("image") String image,
+                                                 @Field("top_num") int top_num,
+                                                 @Field("filter_threshold") float filter_threshold);
 
     @FormUrlEncoded
     @POST("rest/2.0/image-classify/v1/car")
     Observable<Object> carDetect(@Query("access_token") String access_token,
-                                         @Field("image") String image,
-                                         @Field("top_num") int top_num);
+                                 @Field("image") String image,
+                                 @Field("top_num") int top_num);
+
+    @FormUrlEncoded
+    @POST("rest/2.0/image-classify/v1/plant")
+    Observable<Object> plantDetect(@Query("access_token") String access_token,
+                                   @Field("image") String image);
 }

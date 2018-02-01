@@ -13,6 +13,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Environment;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -25,9 +26,88 @@ public class BitmapUtils {
 			.toString();
 	public static final String PHTOT_NAME = "/PHOTO";
 
+	private static final char last2byte = (char) Integer
+			.parseInt("00000011", 2);
+	private static final char last4byte = (char) Integer
+			.parseInt("00001111", 2);
+	private static final char last6byte = (char) Integer
+			.parseInt("00111111", 2);
+	private static final char lead6byte = (char) Integer
+			.parseInt("11111100", 2);
+	private static final char lead4byte = (char) Integer
+			.parseInt("11110000", 2);
+	private static final char lead2byte = (char) Integer
+			.parseInt("11000000", 2);
+	private static final char[] encodeTable = new char[] { 'A', 'B', 'C', 'D',
+			'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
+			'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd',
+			'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
+			'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3',
+			'4', '5', '6', '7', '8', '9', '+', '/' };
+
+	/**
+	 * Base64 encoding.
+	 *
+	 * @param from
+	 *            The src data.
+	 * @return cryto_str
+	 */
+	public static String base64Encode(byte[] from) {
+		StringBuilder to = new StringBuilder((int) (from.length * 1.34) + 3);
+		int num = 0;
+		char currentByte = 0;
+		for (int i = 0; i < from.length; i++) {
+			num = num % 8;
+			while (num < 8) {
+				switch (num) {
+					case 0:
+						currentByte = (char) (from[i] & lead6byte);
+						currentByte = (char) (currentByte >>> 2);
+						break;
+					case 2:
+						currentByte = (char) (from[i] & last6byte);
+						break;
+					case 4:
+						currentByte = (char) (from[i] & last4byte);
+						currentByte = (char) (currentByte << 2);
+						if ((i + 1) < from.length) {
+							currentByte |= (from[i + 1] & lead2byte) >>> 6;
+						}
+						break;
+					case 6:
+						currentByte = (char) (from[i] & last2byte);
+						currentByte = (char) (currentByte << 4);
+						if ((i + 1) < from.length) {
+							currentByte |= (from[i + 1] & lead4byte) >>> 4;
+						}
+						break;
+					default:
+						break;
+				}
+				to.append(encodeTable[currentByte]);
+				num += 6;
+			}
+		}
+		if (to.length() % 4 != 0) {
+			for (int i = 4 - to.length() % 4; i > 0; i--) {
+				to.append("=");
+			}
+		}
+		return to.toString();
+	}
+
+	/**
+	 *
+	 */
+	public static byte[] bitmapToByte(Bitmap bitmap) {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+		return baos.toByteArray();
+	}
+
 	/**
 	 * 把图片保存到sd卡中，保存的路径为storage/PHOTO;
-	 * 
+	 *
 	 * @param bitmap
 	 * @param imageName
 	 */
@@ -63,7 +143,7 @@ public class BitmapUtils {
 
 	/**
 	 * 从sd卡中取出图片；
-	 * 
+	 *
 	 * @param imageName
 	 * @return
 	 */
@@ -87,7 +167,7 @@ public class BitmapUtils {
 
 	/**
 	 * 删除sd卡上的图片；
-	 * 
+	 *
 	 * @param file
 	 */
 	public static void deleteFile(File file) {
@@ -111,13 +191,13 @@ public class BitmapUtils {
 
 	/**
 	 * 把文本保存到SDCard/Android/data/你的应用的包名/files/ 目录下，当卸载应用的时候删除；
-	 * 
+	 *
 	 * @param context
 	 * @param fileName
 	 * @param text
 	 */
 	public static void savetoSDText(Context context, String fileName,
-			String text) {
+									String text) {
 		// TODO Auto-generated method stub
 		File file = context.getExternalFilesDir("/photo");
 		try {
@@ -132,13 +212,13 @@ public class BitmapUtils {
 
 	/**
 	 * 把图片保存SDCard/Android/data/你的应用的包名/files/ 目录下 当卸载应用的时候删除
-	 * 
+	 *
 	 * @param context
 	 * @param fileName
 	 * @param bitmap
 	 */
 	public static void saveToSDBitmap(Context context, String fileName,
-			Bitmap bitmap) {
+									  Bitmap bitmap) {
 		File file = context.getExternalFilesDir("/photo");
 		try {
 			FileOutputStream fos = new FileOutputStream(file + "/" + fileName);
@@ -181,6 +261,7 @@ public class BitmapUtils {
 		}
 		return output;
 	}
+
 	/**
 	 * 得到圆形图片；
 	 */
@@ -188,7 +269,7 @@ public class BitmapUtils {
 		int width = bitmap.getWidth();
 		int height = bitmap.getHeight();
 		float roundPx;
-		float left,top,right,bottom,dst_left,dst_top,dst_right,dst_bottom;
+		float left, top, right, bottom, dst_left, dst_top, dst_right, dst_bottom;
 		if (width <= height) {
 			roundPx = width / 2;
 			top = 0;
@@ -220,8 +301,8 @@ public class BitmapUtils {
 
 		final int color = 0xff424242;
 		final Paint paint = new Paint();
-		final Rect src = new Rect((int)left, (int)top, (int)right, (int)bottom);
-		final Rect dst = new Rect((int)dst_left, (int)dst_top, (int)dst_right, (int)dst_bottom);
+		final Rect src = new Rect((int) left, (int) top, (int) right, (int) bottom);
+		final Rect dst = new Rect((int) dst_left, (int) dst_top, (int) dst_right, (int) dst_bottom);
 		final RectF rectF = new RectF(dst);
 		paint.setAntiAlias(true);
 		canvas.drawARGB(0, 0, 0, 0);
@@ -232,10 +313,10 @@ public class BitmapUtils {
 		canvas.drawBitmap(bitmap, src, dst, paint);
 		return output;
 	}
+
 	/**
-	 * 
 	 * 判断sd卡是否可用；
-	 * 
+	 *
 	 * @return
 	 */
 	public static boolean isSdcardExisting() {
@@ -247,3 +328,4 @@ public class BitmapUtils {
 		}
 	}
 }
+

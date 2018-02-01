@@ -8,10 +8,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,19 +22,23 @@ import android.widget.Toast;
 import com.android.funny.R;
 import com.android.funny.bean.BaiduAccessTokenBean;
 import com.android.funny.bean.Constants;
+import com.android.funny.bean.DishDetectBean;
 import com.android.funny.component.ApplicationComponent;
 import com.android.funny.component.DaggerHttpComponent;
+import com.android.funny.ui.adapter.CustomBaseQuickAdapter;
 import com.android.funny.ui.base.BaseFragment;
 import com.android.funny.ui.imageclassify.contract.ImageClassifyContract;
 import com.android.funny.ui.imageclassify.presenter.ImageClassifyPresenter;
 import com.android.funny.utils.BitmapUtils;
-import com.baidu.aip.imageclassify.AipImageClassify;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
+import com.hss01248.dialog.StyledDialog;
+import com.hss01248.dialog.interfaces.MyItemDialogListener;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
-import org.json.JSONObject;
-
 import java.io.File;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,15 +60,21 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
     RelativeLayout imageLayout;
     @BindView(R.id.upload_img_tv)
     TextView uploadImgTv;
-    @BindView(R.id.image_tv)
-    TextView imageTv;
+    @BindView(R.id.mRecyclerView)
+    RecyclerView mRecyclerView;
+    @BindView(R.id.upload_icon)
+    LinearLayout uploadIcon;
     Unbinder unbinder;
 
     private static final int PICK_REQUEST_CODE = 0;
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int ZOOM_REQUEST_CODE = 2;
+    private String mAccessToken = "";
 
     private static final String IMAGE_FILE_NAME = "photo.jpg";
+
+    CustomBaseQuickAdapter<DishDetectBean.ResultBean> mAdapter;
+    List<DishDetectBean.ResultBean> mDataList = new ArrayList<>();
 
     public static ImageClassifyFragment newInstance() {
         Bundle args = new Bundle();
@@ -85,19 +98,24 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
 
     @Override
     public void bindView(View view, Bundle savedInstanceState) {
-        AipImageClassify client = new AipImageClassify(Constants.BAIDU_AI_APPID, Constants.BAIDU_AI_AK, Constants.BAIDU_AI_SK);
-        client.setConnectionTimeoutInMillis(2000);
-        client.setSocketTimeoutInMillis(60000);
+        mAdapter = new CustomBaseQuickAdapter<DishDetectBean.ResultBean>(R.layout.item_img_classify, null) {
+            @Override
+            public void customConvert(BaseViewHolder holder, DishDetectBean.ResultBean item) {
+                holder.setText(R.id.dish_name, item.getName())
+                        .setText(R.id.dish_calorie, item.getCalorie())
+                        .setText(R.id.dish_probability, item.getProbability());
+            }
+        };
 
-        HashMap<String, String> options = new HashMap<String, String>();
-        options.put("top_num", "3");
-        String image = "src/test.jpg";
-        JSONObject res = client.dishDetect(image, options);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.setEnableLoadMore(false);
+        mAdapter.openLoadAnimation(BaseQuickAdapter.ALPHAIN);
     }
 
     @Override
     public void initData() {
-
+        showSuccess();
     }
 
     @Override
@@ -118,10 +136,36 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.image_layout:
+                mPresenter.getAccessToken(Constants.BAIDU_AI_AK, Constants.BAIDU_AI_SK);
                 break;
             case R.id.upload_img_tv:
                 break;
         }
+    }
+
+    private void showDialog() {
+        List<String> data = new ArrayList<>();
+        data.add("相机");
+        data.add("相册");
+        data.add("取消");
+        StyledDialog.buildIosSingleChoose(data, new MyItemDialogListener() {
+            @Override
+            public void onItemClick(CharSequence charSequence, int i) {
+                switch (i) {
+                    case 0:
+                        takePhoto();
+                        StyledDialog.dismiss();
+                        break;
+                    case 1:
+                        photoAlbum();
+                        StyledDialog.dismiss();
+                        break;
+                    case 2:
+                        StyledDialog.dismiss();
+                        break;
+                }
+            }
+        }).show();
     }
 
     private void takePhoto() {
@@ -134,19 +178,20 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
                     if (BitmapUtils.isSdcardExisting()) {
                         Intent intent_camera = new Intent(
                                 "android.media.action.IMAGE_CAPTURE");
-                        intent_camera.putExtra(MediaStore.EXTRA_OUTPUT, getImageUri());
+                        intent_camera.putExtra(MediaStore.EXTRA_OUTPUT,
+                                ImageClassifyFragment.this.getImageUri());
                         intent_camera.putExtra(
                                 MediaStore.EXTRA_VIDEO_QUALITY, 0);
-                        startActivityForResult(intent_camera,
+                        ImageClassifyFragment.this.startActivityForResult(intent_camera,
                                 CAMERA_REQUEST_CODE);
 
                     } else {
-                        Toast.makeText(getActivity(), "请插入sd卡",
+                        Toast.makeText(ImageClassifyFragment.this.getActivity(), "请插入sd卡",
                                 Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     //未获取权限
-                    Toast.makeText(getContext(), "您没有授权该权限，请在设置中打开授权", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ImageClassifyFragment.this.getContext(), "您没有授权该权限，请在设置中打开授权", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -233,17 +278,21 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
         Bundle extras = data.getExtras();
         if (extras != null) {
             Bitmap photo = extras.getParcelable("data");
-            Bitmap photo_round = BitmapUtils.toRoundBitmap(photo);
             // saveServer();保存到服务器；
             // saveSD();保存到sd卡;
-            BitmapUtils.saveToSDBitmap(getActivity(), "zmIcon.png",
-                    photo_round);
+//            BitmapUtils.saveToSDBitmap(getActivity(), "pic.png",
+//                    photo);
+            String img = BitmapUtils.base64Encode(BitmapUtils.bitmapToByte(photo));
+            uploadIcon.setVisibility(View.GONE);
+            imageIv.setImageBitmap(photo);
+            mPresenter.dishDetect(mAccessToken, img, 5, 0.95f);
         }
     }
 
     @Override
     public void loadAccessTokenData(BaiduAccessTokenBean bean) {
-
+        mAccessToken = bean.getAccess_token();
+        showDialog();
     }
 
     @Override
@@ -252,7 +301,17 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
     }
 
     @Override
-    public void loaDishDetectData(Object o) {
+    public void loaDishDetectData(DishDetectBean bean) {
+        mAdapter.setNewData(bean.getResult());
+    }
+
+    @Override
+    public void loadCarDetectData(Object o) {
+
+    }
+
+    @Override
+    public void loadPlantDetectData(Object o) {
 
     }
 }

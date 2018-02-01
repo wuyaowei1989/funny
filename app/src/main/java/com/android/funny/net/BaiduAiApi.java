@@ -2,6 +2,7 @@ package com.android.funny.net;
 
 import com.android.funny.bean.BaiduAccessTokenBean;
 import com.android.funny.bean.Constants;
+import com.android.funny.bean.DishDetectBean;
 
 import io.reactivex.Observable;
 
@@ -44,7 +45,7 @@ public class BaiduAiApi {
      * @return JSONObject
      */
 
-    public Observable<Object> dishesRecognition(String token, String image, int top_num, float filter_threshold) {
+    public Observable<DishDetectBean> dishesRecognition(String token, String image, int top_num, float filter_threshold) {
         return mService.dishesRecognition(token, image, top_num, filter_threshold);
     }
 
@@ -58,5 +59,17 @@ public class BaiduAiApi {
      */
     public Observable<Object> carDetect(String token, String image, int top_num) {
         return mService.carDetect(token, image, top_num);
+    }
+
+    /**
+     * 植物识别
+     * @param token
+     * @param image
+     * @return
+     *
+     * 该请求用于识别一张图片，即对于输入的一张图片（可正常解码，且长宽比较合适），输出植物识别结果。
+     */
+    public Observable<Object> plantDetect(String token, String image) {
+        return mService.plantDetect(token, image);
     }
 }

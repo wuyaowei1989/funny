@@ -1,6 +1,7 @@
 package com.android.funny.ui.imageclassify.contract;
 
 import com.android.funny.bean.BaiduAccessTokenBean;
+import com.android.funny.bean.DishDetectBean;
 import com.android.funny.ui.base.BaseContract;
 
 /**
@@ -13,7 +14,11 @@ public interface ImageClassifyContract {
 
         void loadAccessTokenDataFail(String s);
 
-        void loaDishDetectData(Object o);
+        void loaDishDetectData(DishDetectBean o);
+
+        void loadCarDetectData(Object o);
+
+        void loadPlantDetectData(Object o);
     }
 
     interface Presenter extends BaseContract.BasePresenter<View> {
@@ -28,12 +33,29 @@ public interface ImageClassifyContract {
 
         /**
          * 菜品识别
+         *
          * @param access_token
          * @param img
          * @param top_num
-         * @param filter_threshold
-         * 该请求用于菜品识别。即对于输入的一张图片（可正常解码，且长宽比适宜），输出图片的菜品名称、卡路里信息、置信度。
+         * @param filter_threshold 该请求用于菜品识别。即对于输入的一张图片（可正常解码，且长宽比适宜），输出图片的菜品名称、卡路里信息、置信度。
          */
         void dishDetect(String access_token, String img, int top_num, float filter_threshold);
+
+        /**
+         * 车型识别
+         *
+         * @param access_token
+         * @param img
+         * @param top_num      该请求用于检测一张车辆图片的具体车型。即对于输入的一张图片（可正常解码，且长宽比适宜），输出图片的车辆品牌及型号。
+         */
+        void carDetect(String access_token, String img, int top_num);
+
+        /**
+         * 植物识别
+         *
+         * @param token
+         * @param image 该请求用于识别一张图片，即对于输入的一张图片（可正常解码，且长宽比较合适），输出植物识别结果。
+         */
+        void plantDetect(String token, String image);
     }
 }
