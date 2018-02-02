@@ -139,6 +139,7 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
                 mPresenter.getAccessToken(Constants.BAIDU_AI_AK, Constants.BAIDU_AI_SK);
                 break;
             case R.id.upload_img_tv:
+                mPresenter.getImageList("美食", 0, 10);
                 break;
         }
     }
@@ -312,6 +313,11 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
 
     @Override
     public void loadPlantDetectData(Object o) {
+
+    }
+
+    @Override
+    public void loadImageData() {
 
     }
 }

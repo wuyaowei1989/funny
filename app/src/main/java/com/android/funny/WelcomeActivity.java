@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.android.funny.component.ApplicationComponent;
 import com.android.funny.ui.base.BaseActivity;
-import com.android.funny.utils.ImageLoaderUtil;
 
 import java.util.concurrent.TimeUnit;
 
@@ -47,7 +46,7 @@ public class WelcomeActivity extends BaseActivity {
 
     @Override
     public void bindView(View view, Bundle savedInstanceState) {
-        ImageLoaderUtil.LoadImage(this, "https://picsum.photos/1920/1080/?random", ivAd);
+        ivAd.setImageResource(R.drawable.welcome);
 
         mCompositeDisposable.add(countDown(5).doOnSubscribe(new Consumer<Disposable>() {
             @Override

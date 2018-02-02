@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
+    android:background="@drawable/bg"
     android:orientation="vertical">
 
     <View
@@ -22,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="菜品识别"
-            android:textColor="@color/black"
+            android:textColor="@color/dialogutil_bg_white"
             android:textSize="17sp" />
     </LinearLayout>
 

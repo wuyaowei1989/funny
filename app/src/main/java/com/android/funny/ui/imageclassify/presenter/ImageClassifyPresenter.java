@@ -98,4 +98,24 @@ public class ImageClassifyPresenter extends BasePresenter<ImageClassifyContract.
                     }
                 });
     }
+
+    @Override
+    public void getImageList(String word, int pageNum, int pageSize) {
+        int pn = pageNum == 0 ? pageNum : (pageNum * pageSize + 1);
+        mBaiduAiApi.getImage(word, pn, pageSize)
+                .compose(RxSchedulers.<Object>applySchedulers())
+                .compose(mView.<Object>bindToLife())
+                .subscribe(new BaseObserver<Object>() {
+                    @Override
+                    public void onSuccess(Object itemBeen) {
+
+                        mView.loadImageData();
+                    }
+
+                    @Override
+                    public void onFail(Throwable e) {
+                        //
+                    }
+                });
+    }
 }

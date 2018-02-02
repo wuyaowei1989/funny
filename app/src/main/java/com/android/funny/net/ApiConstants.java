@@ -22,4 +22,10 @@ public class ApiConstants {
 
     public static final String sBaiduAiApi = "https://aip.baidubce.com/";
 
+    public static final String sBaiduApi = "http://image.baidu.com/";
+
+    public static final String sBaiduTn = "resultjson";
+
+    public static final String sBaiduIe = "utf-8";
+
 }

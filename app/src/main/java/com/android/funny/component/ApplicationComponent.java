@@ -6,6 +6,7 @@ import com.android.funny.MyApp;
 import com.android.funny.module.ApplicationModule;
 import com.android.funny.module.HttpModule;
 import com.android.funny.net.BaiduAiApi;
+import com.android.funny.net.BaiduApi;
 import com.android.funny.net.JanDanApi;
 import com.android.funny.net.NewsApi;
 import com.android.funny.net.SinaApi;
@@ -29,6 +30,8 @@ public interface ApplicationComponent {
     SinaApi getSinaApi();
 
     BaiduAiApi getBaiduAiApi();
+
+    BaiduApi getBaiduApi();
 
     Context getContext();
 

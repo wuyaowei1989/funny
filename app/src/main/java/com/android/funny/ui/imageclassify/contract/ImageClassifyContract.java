@@ -19,6 +19,8 @@ public interface ImageClassifyContract {
         void loadCarDetectData(Object o);
 
         void loadPlantDetectData(Object o);
+
+        void loadImageData();
     }
 
     interface Presenter extends BaseContract.BasePresenter<View> {
@@ -57,5 +59,10 @@ public interface ImageClassifyContract {
          * @param image 该请求用于识别一张图片，即对于输入的一张图片（可正常解码，且长宽比较合适），输出植物识别结果。
          */
         void plantDetect(String token, String image);
+
+        /**
+         * 获取图片
+         */
+        void getImageList(String word, int pageNum, int pageSize);
     }
 }

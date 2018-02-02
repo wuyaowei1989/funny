@@ -67,8 +67,8 @@ public class MainActivity extends BaseActivity {
             mFragments[3] = findFragment(PersonalFragment.class);
         }
 
-        mBottomBar.addItem(new BottomBarTab(this, R.drawable.ic_news, "新闻"))
-                .addItem(new BottomBarTab(this, R.drawable.ic_video, "视频"))
+        mBottomBar.addItem(new BottomBarTab(this, R.drawable.ic_cai, "菜品"))
+                .addItem(new BottomBarTab(this, R.drawable.ic_car, "汽车"))
                 .addItem(new BottomBarTab(this, R.drawable.ic_gaoxiao, "搞笑"))
                 .addItem(new BottomBarTab(this, R.drawable.ic_my, "我的"));
         mBottomBar.setOnTabSelectedListener(new BottomBar.OnTabSelectedListener() {

@@ -38,4 +38,12 @@ public interface BaiduAiApiService {
     @POST("rest/2.0/image-classify/v1/plant")
     Observable<Object> plantDetect(@Query("access_token") String access_token,
                                    @Field("image") String image);
+
+    @GET("search/index")
+    Observable<Object> getImageList(@Query("url") String url,
+                                    @Query("tn") String tn,
+                                    @Query("ie") String ie,
+                                    @Query("word") String word,
+                                    @Query("pn") int pn,
+                                    @Query("rn") int rn);
 }
