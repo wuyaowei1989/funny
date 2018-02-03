@@ -48,10 +48,10 @@ public class WelcomeActivity extends BaseActivity {
     public void bindView(View view, Bundle savedInstanceState) {
         ivAd.setImageResource(R.drawable.welcome);
 
-        mCompositeDisposable.add(countDown(5).doOnSubscribe(new Consumer<Disposable>() {
+        mCompositeDisposable.add(countDown(3).doOnSubscribe(new Consumer<Disposable>() {
             @Override
             public void accept(@NonNull Disposable disposable) throws Exception {
-                tvSkip.setText("跳过 6");
+                tvSkip.setText("跳过 4");
             }
         }).subscribeWith(new DisposableObserver<Integer>() {
             @Override

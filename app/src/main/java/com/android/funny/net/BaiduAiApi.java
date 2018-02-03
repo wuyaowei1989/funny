@@ -1,6 +1,7 @@
 package com.android.funny.net;
 
 import com.android.funny.bean.BaiduAccessTokenBean;
+import com.android.funny.bean.BaiduPicBean;
 import com.android.funny.bean.Constants;
 import com.android.funny.bean.DishDetectBean;
 
@@ -77,7 +78,7 @@ public class BaiduAiApi {
     /**
      * 获取图片
      */
-    public Observable<Object> getImage(String word, int pn, int rn) {
-        return mService.getImageList(ApiConstants.sBaiduApi, ApiConstants.sBaiduTn, ApiConstants.sBaiduIe, word, pn, rn);
+    public Observable<BaiduPicBean> getImage(String word, int pn, int rn) {
+        return mService.getImageList(ApiConstants.sBaiduApi_1, ApiConstants.sBaiduTn, ApiConstants.sBaiduIe, word, pn, rn);
     }
 }

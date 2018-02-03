@@ -1,6 +1,7 @@
 package com.android.funny.net;
 
 import com.android.funny.bean.BaiduAccessTokenBean;
+import com.android.funny.bean.BaiduPicBean;
 import com.android.funny.bean.DishDetectBean;
 
 import io.reactivex.Observable;
@@ -9,6 +10,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
+import retrofit2.http.Url;
 
 /**
  * Created by Administrator on 2018/1/31.
@@ -39,11 +41,11 @@ public interface BaiduAiApiService {
     Observable<Object> plantDetect(@Query("access_token") String access_token,
                                    @Field("image") String image);
 
-    @GET("search/index")
-    Observable<Object> getImageList(@Query("url") String url,
-                                    @Query("tn") String tn,
-                                    @Query("ie") String ie,
-                                    @Query("word") String word,
-                                    @Query("pn") int pn,
-                                    @Query("rn") int rn);
+    @GET
+    Observable<BaiduPicBean> getImageList(@Url String url,
+                                          @Query("tn") String tn,
+                                          @Query("ie") String ie,
+                                          @Query("word") String word,
+                                          @Query("pn") int pn,
+                                          @Query("rn") int rn);
 }

@@ -1,6 +1,7 @@
 package com.android.funny.ui.imageclassify.presenter;
 
 import com.android.funny.bean.BaiduAccessTokenBean;
+import com.android.funny.bean.BaiduPicBean;
 import com.android.funny.bean.DishDetectBean;
 import com.android.funny.net.BaiduAiApi;
 import com.android.funny.net.BaseObserver;
@@ -103,13 +104,12 @@ public class ImageClassifyPresenter extends BasePresenter<ImageClassifyContract.
     public void getImageList(String word, int pageNum, int pageSize) {
         int pn = pageNum == 0 ? pageNum : (pageNum * pageSize + 1);
         mBaiduAiApi.getImage(word, pn, pageSize)
-                .compose(RxSchedulers.<Object>applySchedulers())
-                .compose(mView.<Object>bindToLife())
-                .subscribe(new BaseObserver<Object>() {
+                .compose(RxSchedulers.<BaiduPicBean>applySchedulers())
+                .compose(mView.<BaiduPicBean>bindToLife())
+                .subscribe(new BaseObserver<BaiduPicBean>() {
                     @Override
-                    public void onSuccess(Object itemBeen) {
-
-                        mView.loadImageData();
+                    public void onSuccess(BaiduPicBean itemBeen) {
+                        mView.loadImageData(itemBeen);
                     }
 
                     @Override

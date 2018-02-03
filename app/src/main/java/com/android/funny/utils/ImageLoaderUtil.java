@@ -96,8 +96,4 @@ public class ImageLoaderUtil {
                 .listener(listener)
                 .into(imageView);
     }
-
-
-
-
 }

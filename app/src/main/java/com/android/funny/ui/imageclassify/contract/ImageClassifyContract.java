@@ -1,6 +1,7 @@
 package com.android.funny.ui.imageclassify.contract;
 
 import com.android.funny.bean.BaiduAccessTokenBean;
+import com.android.funny.bean.BaiduPicBean;
 import com.android.funny.bean.DishDetectBean;
 import com.android.funny.ui.base.BaseContract;
 
@@ -20,7 +21,7 @@ public interface ImageClassifyContract {
 
         void loadPlantDetectData(Object o);
 
-        void loadImageData();
+        void loadImageData(BaiduPicBean bean);
     }
 
     interface Presenter extends BaseContract.BasePresenter<View> {

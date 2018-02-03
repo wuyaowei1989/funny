@@ -1,0 +1,45 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/md_card"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/img_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="#FFF"
+            android:visibility="visible">
+
+            <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+                android:id="@+id/progress"
+                style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:indeterminate="true"
+                android:visibility="gone"
+                app:mpb_progressStyle="horizontal"
+                app:mpb_secondaryProgressTint="@color/colorPrimary" />
+
+            <ImageView
+                android:id="@+id/img"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_alignTop="@id/progress"
+                android:layout_centerInParent="true"
+                android:background="#E8E8E8"
+                android:scaleType="fitXY"/>
+        </RelativeLayout>
+    </LinearLayout>
+</FrameLayout>

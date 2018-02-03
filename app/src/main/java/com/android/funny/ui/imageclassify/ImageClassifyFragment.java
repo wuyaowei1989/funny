@@ -8,19 +8,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.funny.R;
 import com.android.funny.bean.BaiduAccessTokenBean;
+import com.android.funny.bean.BaiduPicBean;
 import com.android.funny.bean.Constants;
 import com.android.funny.bean.DishDetectBean;
 import com.android.funny.component.ApplicationComponent;
@@ -30,6 +29,12 @@ import com.android.funny.ui.base.BaseFragment;
 import com.android.funny.ui.imageclassify.contract.ImageClassifyContract;
 import com.android.funny.ui.imageclassify.presenter.ImageClassifyPresenter;
 import com.android.funny.utils.BitmapUtils;
+import com.android.funny.utils.ImageLoaderUtil;
+import com.android.funny.widget.CommonAdapter;
+import com.android.funny.widget.flingswipe.SwipeFlingAdapterView;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.hss01248.dialog.StyledDialog;
@@ -53,28 +58,28 @@ import io.reactivex.functions.Consumer;
 
 public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> implements ImageClassifyContract.View {
 
-
-    @BindView(R.id.image_iv)
-    ImageView imageIv;
-    @BindView(R.id.image_layout)
-    RelativeLayout imageLayout;
-    @BindView(R.id.upload_img_tv)
-    TextView uploadImgTv;
     @BindView(R.id.mRecyclerView)
     RecyclerView mRecyclerView;
-    @BindView(R.id.upload_icon)
-    LinearLayout uploadIcon;
+    @BindView(R.id.frame)
+    SwipeFlingAdapterView frame;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
+    @BindView(R.id.empty_img)
+    ImageView emptyImg;
+
     Unbinder unbinder;
 
     private static final int PICK_REQUEST_CODE = 0;
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int ZOOM_REQUEST_CODE = 2;
+
     private String mAccessToken = "";
 
     private static final String IMAGE_FILE_NAME = "photo.jpg";
 
     CustomBaseQuickAdapter<DishDetectBean.ResultBean> mAdapter;
-    List<DishDetectBean.ResultBean> mDataList = new ArrayList<>();
+    ArrayList<BaiduPicBean.DataBean> mDataList = new ArrayList<>();
+    CommonAdapter<BaiduPicBean.DataBean> mCardAdapter;
 
     public static ImageClassifyFragment newInstance() {
         Bundle args = new Bundle();
@@ -98,6 +103,8 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
 
     @Override
     public void bindView(View view, Bundle savedInstanceState) {
+        mPresenter.getAccessToken(Constants.BAIDU_AI_AK, Constants.BAIDU_AI_SK);
+        setCardAdapter();
         mAdapter = new CustomBaseQuickAdapter<DishDetectBean.ResultBean>(R.layout.item_img_classify, null) {
             @Override
             public void customConvert(BaseViewHolder holder, DishDetectBean.ResultBean item) {
@@ -110,7 +117,81 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setEnableLoadMore(false);
-        mAdapter.openLoadAnimation(BaseQuickAdapter.ALPHAIN);
+        mAdapter.openLoadAnimation(BaseQuickAdapter.SCALEIN);
+        mPresenter.getImageList("高清中餐图片", 0, 10);
+    }
+
+    private void setCardAdapter() {
+        mCardAdapter = new CommonAdapter<BaiduPicBean.DataBean>(getContext(), mDataList, R.layout.item_image_card) {
+            @Override
+            protected void setListeners(com.android.funny.widget.BaseViewHolder holder, View view, int position) {
+                view.setOnClickListener(holder);
+            }
+
+            @Override
+            protected void setViewData(int position, com.android.funny.widget.BaseViewHolder holder, BaiduPicBean.DataBean item) {
+                ImageView imageView = holder.getView(R.id.img);
+                ImageLoaderUtil.LoadImage(mContext, item.getObjURL(), imageView);
+            }
+
+            @Override
+            public void onClickBack(int position, View view, com.android.funny.widget.BaseViewHolder holder) {
+            }
+        };
+
+        frame.setAdapter(mCardAdapter);
+        frame.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
+            @Override
+            public void removeFirstObjectInAdapter() {
+                mDataList.remove(0);
+                mCardAdapter.update(mDataList);
+            }
+
+            @Override
+            public void onLeftCardExit(Object o) {
+
+            }
+
+            @Override
+            public void onRightCardExit(Object o) {
+
+            }
+
+            @Override
+            public void onAdapterAboutToEmpty(int i) {
+                emptyImg.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onScroll(float v) {
+                try {
+                    View view = frame.getSelectedView();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        frame.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClicked(int itemPosition, Object dataObject) {
+                if (dataObject == null) {
+                    //todo
+                } else {
+                    dishDetect((BaiduPicBean.DataBean) dataObject);
+                }
+            }
+        });
+    }
+
+    public void dishDetect(BaiduPicBean.DataBean dataBean) {
+        Glide.with(getContext()).asBitmap().load(dataBean.getObjURL()).into(new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                String img = BitmapUtils.base64Encode(BitmapUtils.bitmapToByte(resource));
+                mPresenter.dishDetect(mAccessToken, img, 3, 0.95f);
+            }
+        });
+
     }
 
     @Override
@@ -130,18 +211,6 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-    }
-
-    @OnClick({R.id.image_layout, R.id.upload_img_tv})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.image_layout:
-                mPresenter.getAccessToken(Constants.BAIDU_AI_AK, Constants.BAIDU_AI_SK);
-                break;
-            case R.id.upload_img_tv:
-                mPresenter.getImageList("美食", 0, 10);
-                break;
-        }
     }
 
     private void showDialog() {
@@ -283,9 +352,11 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
             // saveSD();保存到sd卡;
 //            BitmapUtils.saveToSDBitmap(getActivity(), "pic.png",
 //                    photo);
+            mDataList.clear();
+            mAdapter.notifyDataSetChanged();
+            emptyImg.setVisibility(View.VISIBLE);
+            emptyImg.setImageBitmap(photo);
             String img = BitmapUtils.base64Encode(BitmapUtils.bitmapToByte(photo));
-            uploadIcon.setVisibility(View.GONE);
-            imageIv.setImageBitmap(photo);
             mPresenter.dishDetect(mAccessToken, img, 5, 0.95f);
         }
     }
@@ -293,7 +364,6 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
     @Override
     public void loadAccessTokenData(BaiduAccessTokenBean bean) {
         mAccessToken = bean.getAccess_token();
-        showDialog();
     }
 
     @Override
@@ -316,8 +386,21 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
 
     }
 
-    @Override
-    public void loadImageData() {
 
+    @Override
+    public void loadImageData(BaiduPicBean baiduPicBean) {
+        mDataList.addAll(baiduPicBean.getData());
+        emptyImg.setVisibility(View.GONE);
+        mCardAdapter.update(mDataList);
+    }
+
+    @OnClick(R.id.fab)
+    public void onViewFabClicked() {
+        showDialog();
+    }
+
+    @OnClick(R.id.empty_img)
+    public void onViewClicked() {
+        showDialog();
     }
 }
