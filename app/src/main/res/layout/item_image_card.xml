@@ -35,7 +35,7 @@
             <ImageView
                 android:id="@+id/img"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="280dp"
                 android:layout_alignTop="@id/progress"
                 android:layout_centerInParent="true"
                 android:background="#E8E8E8"

@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.funny.R;
@@ -66,6 +67,8 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
     FloatingActionButton fab;
     @BindView(R.id.empty_img)
     ImageView emptyImg;
+    @BindView(R.id.empty_layout)
+    LinearLayout emptyLayout;
 
     Unbinder unbinder;
 
@@ -159,16 +162,14 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
 
             @Override
             public void onAdapterAboutToEmpty(int i) {
-                emptyImg.setVisibility(View.VISIBLE);
+                if (mDataList.size() == 0) {
+                    emptyLayout.setVisibility(View.VISIBLE);
+                    emptyImg.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
             public void onScroll(float v) {
-                try {
-                    View view = frame.getSelectedView();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             }
         });
         frame.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
@@ -217,6 +218,7 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
         List<String> data = new ArrayList<>();
         data.add("相机");
         data.add("相册");
+        data.add("获取网络图片");
         data.add("取消");
         StyledDialog.buildIosSingleChoose(data, new MyItemDialogListener() {
             @Override
@@ -231,6 +233,10 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
                         StyledDialog.dismiss();
                         break;
                     case 2:
+                        mPresenter.getImageList("高清美食图片", 1, 30);
+                        StyledDialog.dismiss();
+                        break;
+                    case 3:
                         StyledDialog.dismiss();
                         break;
                 }
@@ -335,8 +341,8 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
         intent.putExtra("crop", "true");
         intent.putExtra("aspectX", 1);
         intent.putExtra("aspectY", 1);
-        intent.putExtra("outputX", 360);
-        intent.putExtra("outputY", 360);
+        intent.putExtra("outputX", 400);
+        intent.putExtra("outputY", 400);
         //intent.putExtra("circleCrop", true);
         intent.putExtra("return-data", true);
         startActivityForResult(intent, ZOOM_REQUEST_CODE);
@@ -353,7 +359,8 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
 //            BitmapUtils.saveToSDBitmap(getActivity(), "pic.png",
 //                    photo);
             mDataList.clear();
-            mAdapter.notifyDataSetChanged();
+            mCardAdapter.update(mDataList);
+            emptyLayout.setVisibility(View.VISIBLE);
             emptyImg.setVisibility(View.VISIBLE);
             emptyImg.setImageBitmap(photo);
             String img = BitmapUtils.base64Encode(BitmapUtils.bitmapToByte(photo));
@@ -386,11 +393,12 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
 
     }
 
-
     @Override
     public void loadImageData(BaiduPicBean baiduPicBean) {
+        mDataList.clear();
         mDataList.addAll(baiduPicBean.getData());
         emptyImg.setVisibility(View.GONE);
+        emptyLayout.setVisibility(View.GONE);
         mCardAdapter.update(mDataList);
     }
 

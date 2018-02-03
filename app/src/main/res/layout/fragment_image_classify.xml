@@ -34,18 +34,31 @@
         <com.android.funny.widget.flingswipe.SwipeFlingAdapterView
             android:id="@+id/frame"
             android:layout_width="match_parent"
-            android:layout_height="350dp"
+            android:layout_height="330dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
             app:rotation_degrees="14" />
+
+        <LinearLayout
+            android:id="@+id/empty_layout"
+            android:layout_width="match_parent"
+            android:layout_height="320dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/md_card"
+            android:visibility="gone"
+            android:orientation="vertical"></LinearLayout>
+
         <ImageView
             android:id="@+id/empty_img"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:scaleType="fitXY"
             android:src="@drawable/btn_upload_img"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </RelativeLayout>
 
     <RelativeLayout
