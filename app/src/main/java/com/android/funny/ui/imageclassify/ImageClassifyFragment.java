@@ -30,6 +30,7 @@ import com.android.funny.ui.imageclassify.contract.ImageClassifyContract;
 import com.android.funny.ui.imageclassify.presenter.ImageClassifyPresenter;
 import com.android.funny.utils.BitmapUtils;
 import com.android.funny.utils.ImageLoaderUtil;
+import com.android.funny.utils.ShareUtils;
 import com.android.funny.widget.CommonAdapter;
 import com.android.funny.widget.flingswipe.SwipeFlingAdapterView;
 import com.bumptech.glide.Glide;
@@ -82,6 +83,7 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
     private static final String IMAGE_FILE_PATH = Environment.getExternalStorageDirectory() + "/photo.png";
 
     CustomBaseQuickAdapter<DishDetectBean.ResultBean> mAdapter;
+    List<DishDetectBean.ResultBean> mDetectDataList = new ArrayList<>();
     ArrayList<BaiduPicBean.DataBean> mDataList = new ArrayList<>();
     CommonAdapter<BaiduPicBean.DataBean> mCardAdapter;
 
@@ -115,6 +117,7 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
                 holder.setText(R.id.dish_name, item.getName())
                         .setText(R.id.dish_calorie, item.getCalorie())
                         .setText(R.id.dish_probability, item.getProbability());
+                holder.addOnClickListener(R.id.share_tv);
             }
         };
 
@@ -122,6 +125,12 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setEnableLoadMore(false);
         mAdapter.openLoadAnimation(BaseQuickAdapter.SCALEIN);
+        mAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+                ShareUtils.shareText(getContext(), mDetectDataList.get(position).getName());
+            }
+        });
         mPresenter.getImageList("高清中餐图片", 0, 10);
     }
 
@@ -181,6 +190,7 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
                     //todo
                 } else {
                     mAdapter.setNewData(null);
+                    showLoadingDialog();
                     dishDetect((BaiduPicBean.DataBean) dataObject);
                 }
             }
@@ -339,6 +349,7 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
         emptyLayout.setVisibility(View.VISIBLE);
         emptyLayout.setImageBitmap(bitmap);
         String img = BitmapUtils.base64Encode(BitmapUtils.bitmapToByte(bitmap));
+        showLoadingDialog();
         mPresenter.dishDetect(mAccessToken, img, 5, 0.95f);
     }
 
@@ -355,6 +366,9 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
 
     @Override
     public void loaDishDetectData(DishDetectBean bean) {
+        mDetectDataList.clear();
+        mDetectDataList.addAll(bean.getResult());
+        hideLoadingDialog();
         mAdapter.setNewData(bean.getResult());
     }
 
