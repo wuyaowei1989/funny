@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.funny.R;
@@ -68,7 +67,7 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
     @BindView(R.id.empty_img)
     ImageView emptyImg;
     @BindView(R.id.empty_layout)
-    LinearLayout emptyLayout;
+    ImageView emptyLayout;
 
     Unbinder unbinder;
 
@@ -77,8 +76,10 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
     private static final int ZOOM_REQUEST_CODE = 2;
 
     private String mAccessToken = "";
+    private File mPhotoFile;
 
-    private static final String IMAGE_FILE_NAME = "photo.jpg";
+    private static final String IMAGE_FILE_NAME = "photo.png";
+    private static final String IMAGE_FILE_PATH = Environment.getExternalStorageDirectory() + "/photo.png";
 
     CustomBaseQuickAdapter<DishDetectBean.ResultBean> mAdapter;
     ArrayList<BaiduPicBean.DataBean> mDataList = new ArrayList<>();
@@ -147,6 +148,7 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
             @Override
             public void removeFirstObjectInAdapter() {
                 mDataList.remove(0);
+                mAdapter.setNewData(null);
                 mCardAdapter.update(mDataList);
             }
 
@@ -162,7 +164,7 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
 
             @Override
             public void onAdapterAboutToEmpty(int i) {
-                if (mDataList.size() == 0) {
+                if (mDataList.size() == 1) {
                     emptyLayout.setVisibility(View.VISIBLE);
                     emptyImg.setVisibility(View.VISIBLE);
                 }
@@ -178,6 +180,7 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
                 if (dataObject == null) {
                     //todo
                 } else {
+                    mAdapter.setNewData(null);
                     dishDetect((BaiduPicBean.DataBean) dataObject);
                 }
             }
@@ -205,6 +208,7 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
         // TODO: inflate a fragment view
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         unbinder = ButterKnife.bind(this, rootView);
+        mPhotoFile = new File(IMAGE_FILE_PATH);
         return rootView;
     }
 
@@ -233,6 +237,7 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
                         StyledDialog.dismiss();
                         break;
                     case 2:
+                        emptyLayout.setImageBitmap(null);
                         mPresenter.getImageList("高清美食图片", 1, 30);
                         StyledDialog.dismiss();
                         break;
@@ -256,8 +261,6 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
                                 "android.media.action.IMAGE_CAPTURE");
                         intent_camera.putExtra(MediaStore.EXTRA_OUTPUT,
                                 ImageClassifyFragment.this.getImageUri());
-                        intent_camera.putExtra(
-                                MediaStore.EXTRA_VIDEO_QUALITY, 0);
                         ImageClassifyFragment.this.startActivityForResult(intent_camera,
                                 CAMERA_REQUEST_CODE);
 
@@ -309,64 +312,36 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
         if (resultCode != Activity.RESULT_OK) {
             return;
         } else {
+            Bitmap image;
             switch (requestCode) {
                 case PICK_REQUEST_CODE:
-                    // 从图片选择图片后，直接返回的是uri，然后对通过uri取得图片，进行剪切；
-                    startPhotoZoom(data.getData());
+                    Uri uri = data.getData();
+                    //保存图片
+                    BitmapUtils.saveImageFromGallery(getContext(), uri, mPhotoFile);
+                    //显示图片
+                    image = BitmapUtils.compressImage(IMAGE_FILE_PATH, 400, 500);
+                    detectManualSelPic(image);
                     break;
                 case CAMERA_REQUEST_CODE:
-                    // 首先判断sd卡是否挂载；
-                    if (BitmapUtils.isSdcardExisting()) {
-                        startPhotoZoom(getImageUri());
-                    } else {
-                        Toast.makeText(getActivity(), "未找到存储卡，无法存储照片！",
-                                Toast.LENGTH_LONG).show();
-                    }
+                    BitmapUtils.saveImageFromCamera(IMAGE_FILE_PATH, mPhotoFile);
+                    image = BitmapUtils.compressImage(IMAGE_FILE_PATH, 400, 500);
+                    detectManualSelPic(image);
                     break;
-                // 启动剪切图片；
-                case ZOOM_REQUEST_CODE:
-                    if (data != null) {
-                        showImage(data);
-                    }
-                    break;
+
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    // 对图片进行剪切；
-    public void startPhotoZoom(Uri uri) {
-        Intent intent = new Intent("com.android.camera.action.CROP");
-        intent.setDataAndType(uri, "image/*");
-        intent.putExtra("crop", "true");
-        intent.putExtra("aspectX", 1);
-        intent.putExtra("aspectY", 1);
-        intent.putExtra("outputX", 400);
-        intent.putExtra("outputY", 400);
-        //intent.putExtra("circleCrop", true);
-        intent.putExtra("return-data", true);
-        startActivityForResult(intent, ZOOM_REQUEST_CODE);
+    private void detectManualSelPic(Bitmap bitmap) {
+        mDataList.clear();
+        mCardAdapter.update(mDataList);
+        emptyLayout.setVisibility(View.VISIBLE);
+        emptyLayout.setImageBitmap(bitmap);
+        String img = BitmapUtils.base64Encode(BitmapUtils.bitmapToByte(bitmap));
+        mPresenter.dishDetect(mAccessToken, img, 5, 0.95f);
     }
 
-    // 最张显示图片；但是在实际中，在进入activity中要判断sd卡中是否有图片，如果有图片要首先显示图片。
-    // 把图片保存到本地，并且上传给服务器；
-    private void showImage(Intent data) {
-        Bundle extras = data.getExtras();
-        if (extras != null) {
-            Bitmap photo = extras.getParcelable("data");
-            // saveServer();保存到服务器；
-            // saveSD();保存到sd卡;
-//            BitmapUtils.saveToSDBitmap(getActivity(), "pic.png",
-//                    photo);
-            mDataList.clear();
-            mCardAdapter.update(mDataList);
-            emptyLayout.setVisibility(View.VISIBLE);
-            emptyImg.setVisibility(View.VISIBLE);
-            emptyImg.setImageBitmap(photo);
-            String img = BitmapUtils.base64Encode(BitmapUtils.bitmapToByte(photo));
-            mPresenter.dishDetect(mAccessToken, img, 5, 0.95f);
-        }
-    }
 
     @Override
     public void loadAccessTokenData(BaiduAccessTokenBean bean) {

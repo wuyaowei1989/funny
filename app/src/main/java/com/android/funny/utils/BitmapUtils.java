@@ -1,6 +1,8 @@
 package com.android.funny.utils;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Bitmap.Config;
@@ -11,7 +13,9 @@ import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -25,6 +29,8 @@ public class BitmapUtils {
 	private static String path = Environment.getExternalStorageDirectory()
 			.toString();
 	public static final String PHTOT_NAME = "/PHOTO";
+
+	public static final String PIC_NAME = "pic.jpg";
 
 	private static final char last2byte = (char) Integer
 			.parseInt("00000011", 2);
@@ -141,6 +147,10 @@ public class BitmapUtils {
 		}
 	}
 
+	public static Uri getImageUri() {
+		return Uri.fromFile(new File(Environment.getExternalStorageDirectory().toString() + PHTOT_NAME, PIC_NAME));
+	}
+
 	/**
 	 * 从sd卡中取出图片；
 	 *
@@ -163,6 +173,97 @@ public class BitmapUtils {
 			}
 		}
 		return bitmap;
+	}
+
+	/*保存相机图片到指定文件*/
+	public static void saveImageFromCamera(String path, File file) {
+		//先对图片进行质量压缩，并保存到本地
+		Bitmap bitmap = BitmapFactory.decodeFile(path);
+        /*保存图片*/
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		// 把压缩后的数据存放到baos中，压缩一半
+		bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+		try {
+			FileOutputStream fos = new FileOutputStream(file);
+			fos.write(baos.toByteArray());
+			fos.flush();
+			fos.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/*展示图片时，需要改变图片的宽高大小*/
+	public static Bitmap compressImage(String path, int viewWidth, int viewHeight) {
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inJustDecodeBounds = true;
+		BitmapFactory.decodeFile(path, options);
+		//原始图片大小
+		int outWidth = options.outWidth;
+		int outHeight = options.outHeight;
+		//获取控件的宽高
+		int finalScale = 1;
+		if (outWidth > viewWidth || outHeight > viewHeight) {
+			int w = Math.round((float) outWidth / (float) viewWidth);
+			int h = Math.round((float) outHeight / (float) viewHeight);
+			if (w > h) {
+				finalScale = w;
+			} else {
+				finalScale = h;
+			}
+		}
+		options.inSampleSize = finalScale;
+		options.inPreferredConfig = Bitmap.Config.RGB_565;
+		options.inJustDecodeBounds = false;
+		Bitmap finalBitmap = BitmapFactory.decodeFile(path, options);
+		return finalBitmap;
+	}
+
+	//保存相册图片
+	public static void saveImageFromGallery(Context context, Uri uri, File file) {
+//        this.mFile = file;
+        /*先对图片进行质量压缩*/
+		//根据路径获取到原图
+		String realFilePath = getRealFilePath(context, uri);
+		Bitmap bitmap = BitmapFactory.decodeFile(realFilePath);
+        /*保存图片*/
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		// 把压缩后的数据存放到baos中，压缩一半
+		bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+		try {
+			FileOutputStream fos = new FileOutputStream(file);
+			fos.write(baos.toByteArray());
+			fos.flush();
+			fos.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/*uri转换成文件路径*/
+	private static String getRealFilePath(Context context, final Uri uri) {
+		if (null == uri) {
+			return null;
+		}
+		final String scheme = uri.getScheme();
+		String data = null;
+		if (scheme == null)
+			data = uri.getPath();
+		else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
+			data = uri.getPath();
+		} else if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
+			Cursor cursor = context.getContentResolver().query(uri, new String[]{MediaStore.Images.ImageColumns.DATA}, null, null, null);
+			if (null != cursor) {
+				if (cursor.moveToFirst()) {
+					int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+					if (index > -1) {
+						data = cursor.getString(index);
+					}
+				}
+				cursor.close();
+			}
+		}
+		return data;
 	}
 
 	/**
