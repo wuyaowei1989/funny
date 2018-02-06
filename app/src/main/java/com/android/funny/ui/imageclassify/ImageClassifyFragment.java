@@ -74,7 +74,6 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
 
     private static final int PICK_REQUEST_CODE = 0;
     private static final int CAMERA_REQUEST_CODE = 1;
-    private static final int ZOOM_REQUEST_CODE = 2;
 
     private String mAccessToken = "";
     private File mPhotoFile;
