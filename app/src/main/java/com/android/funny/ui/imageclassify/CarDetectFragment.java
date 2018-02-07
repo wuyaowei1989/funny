@@ -3,6 +3,7 @@ package com.android.funny.ui.imageclassify;
 import android.os.Bundle;
 import android.view.View;
 
+import com.android.funny.R;
 import com.android.funny.bean.BaiduAccessTokenBean;
 import com.android.funny.bean.BaiduPicBean;
 import com.android.funny.bean.DishDetectBean;
@@ -19,7 +20,7 @@ public class CarDetectFragment extends BaseFragment<ImageClassifyPresenter> impl
 
     @Override
     public int getContentLayout() {
-        return 0;
+        return R.layout.fragment_image_classify ;
     }
 
     @Override
