@@ -2,6 +2,7 @@ package com.android.funny.net;
 
 import com.android.funny.bean.BaiduAccessTokenBean;
 import com.android.funny.bean.BaiduPicBean;
+import com.android.funny.bean.CarDetectBean;
 import com.android.funny.bean.Constants;
 import com.android.funny.bean.DishDetectBean;
 
@@ -60,7 +61,7 @@ public class BaiduAiApi {
      * @param top_num
      * @return 该请求用于检测一张车辆图片的具体车型。即对于输入的一张图片（可正常解码，且长宽比适宜），输出图片的车辆品牌及型号。
      */
-    public Observable<Object> carDetect(String token, String image, int top_num) {
+    public Observable<CarDetectBean> carDetect(String token, String image, int top_num) {
         return mService.carDetect(token, image, top_num);
     }
 

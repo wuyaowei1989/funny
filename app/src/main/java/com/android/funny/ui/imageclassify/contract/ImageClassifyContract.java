@@ -2,6 +2,7 @@ package com.android.funny.ui.imageclassify.contract;
 
 import com.android.funny.bean.BaiduAccessTokenBean;
 import com.android.funny.bean.BaiduPicBean;
+import com.android.funny.bean.CarDetectBean;
 import com.android.funny.bean.DishDetectBean;
 import com.android.funny.ui.base.BaseContract;
 
@@ -15,9 +16,9 @@ public interface ImageClassifyContract {
 
         void loadAccessTokenDataFail(String s);
 
-        void loaDishDetectData(DishDetectBean o);
+        void loaDishDetectData(DishDetectBean bean);
 
-        void loadCarDetectData(Object o);
+        void loadCarDetectData(CarDetectBean bean);
 
         void loadPlantDetectData(Object o);
 

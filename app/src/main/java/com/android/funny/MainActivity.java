@@ -7,6 +7,7 @@ import android.widget.FrameLayout;
 import com.android.funny.component.ApplicationComponent;
 import com.android.funny.ui.base.BaseActivity;
 import com.android.funny.ui.base.SupportFragment;
+import com.android.funny.ui.imageclassify.CarDetectFragment;
 import com.android.funny.ui.imageclassify.ImageClassifyFragment;
 import com.android.funny.ui.jandan.JanDanFragment;
 import com.android.funny.ui.personal.PersonalFragment;
@@ -51,7 +52,7 @@ public class MainActivity extends BaseActivity {
         StatusBarUtil.setTranslucentForImageViewInFragment(MainActivity.this, 0, null);
         if (savedInstanceState == null) {
             mFragments[0] = ImageClassifyFragment.newInstance();
-            mFragments[1] = VideoFragment.newInstance();
+            mFragments[1] = CarDetectFragment.newInstance();
             mFragments[2] = JanDanFragment.newInstance();
             mFragments[3] = PersonalFragment.newInstance();
 

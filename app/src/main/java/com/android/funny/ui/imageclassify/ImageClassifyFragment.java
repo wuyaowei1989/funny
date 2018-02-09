@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.android.funny.R;
 import com.android.funny.bean.BaiduAccessTokenBean;
 import com.android.funny.bean.BaiduPicBean;
+import com.android.funny.bean.CarDetectBean;
 import com.android.funny.bean.Constants;
 import com.android.funny.bean.DishDetectBean;
 import com.android.funny.component.ApplicationComponent;
@@ -372,7 +373,7 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
     }
 
     @Override
-    public void loadCarDetectData(Object o) {
+    public void loadCarDetectData(CarDetectBean bean) {
 
     }
 

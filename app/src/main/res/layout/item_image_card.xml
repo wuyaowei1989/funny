@@ -37,7 +37,7 @@
                 android:layout_height="280dp"
                 android:layout_alignTop="@id/progress"
                 android:layout_centerInParent="true"
-                android:background="#E8E8E8"
+                android:background="@drawable/md_card"
                 android:scaleType="fitXY"/>
         </RelativeLayout>
     </LinearLayout>
