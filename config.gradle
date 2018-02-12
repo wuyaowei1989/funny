@@ -2,11 +2,11 @@
 ext {
 
     android = [
-            compileSdkVersion      : 25,
+            compileSdkVersion      : 27,
             buildToolsVersion      : "25.0.2",
             applicationId          : "com.android.funny",
             minSdkVersion          : 19,
-            targetSdkVersion       : 25,
+            targetSdkVersion       : 27,
             versionCode            : 1,
             versionName            : "1.0"
     ]
@@ -25,10 +25,10 @@ ext {
             "cardview"              : "com.android.support:cardview-v7:${dependVersion.support}",
 
             //http
-            "retrofit2"             : "com.squareup.retrofit2:retrofit:2.1.0",
-            "converter-scalars"     : "com.squareup.retrofit2:converter-scalars:2.1.0",
-            "converter-gson"        : "com.squareup.retrofit2:converter-gson:2.1.0",
-            "adapter-rxjava2"       : "com.squareup.retrofit2:adapter-rxjava2:2.2.0",
+            "retrofit2"             : "com.squareup.retrofit2:retrofit:2.3.0",
+            "converter-scalars"     : "com.squareup.retrofit2:converter-scalars:2.3.0",
+            "converter-gson"        : "com.squareup.retrofit2:converter-gson:2.3.0",
+            "adapter-rxjava2"       : "com.squareup.retrofit2:adapter-rxjava2:2.3.0",
 
             //httpcache
             "rxCache"               : "com.github.VictorAlbertos.RxCache:runtime:1.8.0-2.x",
@@ -42,8 +42,8 @@ ext {
             rxlifecomponents        : "com.trello.rxlifecycle2:rxlifecycle-components:2.1.0",
 
             //dagger2
-            "dagger"                : "com.google.dagger:dagger:2.7",
-            "dagger-compiler"       : "com.google.dagger:dagger-compiler:2.7",
+            "dagger"                : "com.google.dagger:dagger:2.9",
+            "dagger-compiler"       : "com.google.dagger:dagger-compiler:2.9",
 
             //ui
             "constraint-layout"     : "com.android.support.constraint:constraint-layout:1.0.2",
@@ -75,6 +75,7 @@ ext {
             "litepal"               : "org.litepal.android:core:1.5.1",
             "retrolambda"           : "me.tatarka:gradle-retrolambda:3.7.0",
 
+            "okhttp"                    : "com.squareup.okhttp3:okhttp:${dependVersion.okhttp}",
             "okhttp-logging-interceptor": "com.squareup.okhttp3:logging-interceptor:${dependVersion.okhttp}",
             "rxpermissions"             : "com.tbruyelle.rxpermissions2:rxpermissions:0.9.3@aar",
     ]

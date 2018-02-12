@@ -46,6 +46,7 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -131,7 +132,8 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
                 ShareUtils.shareText(getContext(), mDetectDataList.get(position).getName());
             }
         });
-        mPresenter.getImageList("高清中餐图片", 0, 10);
+        Random random = new Random();
+        mPresenter.getImageList("高清美食图片", random.nextInt(10), 20);
     }
 
     private void setCardAdapter() {
@@ -248,7 +250,8 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
                         break;
                     case 2:
                         emptyLayout.setImageBitmap(null);
-                        mPresenter.getImageList("高清美食图片", 1, 30);
+                        Random random = new Random();
+                        mPresenter.getImageList("高清美食图片", random.nextInt(10), 30);
                         StyledDialog.dismiss();
                         break;
                     case 3:

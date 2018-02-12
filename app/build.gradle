@@ -1,9 +1,8 @@
 apply plugin: 'com.android.application'
-//apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion rootProject.ext.android.compileSdkVersion
-    buildToolsVersion rootProject.ext.android.buildToolsVersion
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId rootProject.ext.android.applicationId
@@ -14,17 +13,55 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
-    buildTypes {
+    signingConfigs {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            storeFile file('funny.jks')
+            storePassword "123456"
+            keyAlias "key0"
+            keyPassword "123456"
+        }
+        buildTypes {
+            debug {
+                minifyEnabled false
+                //前一部分代表系统默认的android程序的混淆文件，该文件已经包含了基本的混淆声明
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//                signingConfig signingConfigs.release
+            }
+
+            release {
+                //混淆
+                minifyEnabled false
+                //前一部分代表系统默认的android程序的混淆文件，该文件已经包含了基本的混淆声明
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+                signingConfig signingConfigs.release
+            }
+        }
+
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
+
+        applicationVariants.all { variant ->
+            variant.outputs.all {
+                outputFileName = "${variant.name}_.apk"
+                if (outputFileName != null && outputFileName.endsWith('.apk')) {
+                    def date = new Date()
+                    def formattedDate = date.format('yyyy-MM-dd')
+                    def fileName = "apk_quwan_${formattedDate}_${defaultConfig.versionName}.apk"
+                    outputFileName = new File(outputFileName, fileName)
+                }
+            }
+        }
+
+        lintOptions {
+            disable 'InvalidPackage'
+            //只要添加下面这一句就可以了
+            disable 'MissingTranslation'
+            checkReleaseBuilds false
+            abortOnError false
         }
     }
-
-//    compileOptions {
-//        sourceCompatibility JavaVersion.VERSION_1_8
-//        targetCompatibility JavaVersion.VERSION_1_8
-//    }
 
     buildToolsVersion '26.0.2'
 }
@@ -43,8 +80,8 @@ dependencies {
     compile rootProject.ext.dependencies["converter-scalars"]
     compile rootProject.ext.dependencies["converter-gson"]
     compile rootProject.ext.dependencies["adapter-rxjava2"]
-    compile rootProject.ext.dependencies.rxlifecycle2
-    compile rootProject.ext.dependencies.rxlifecomponents
+    compile rootProject.ext.dependencies["rxlifecycle2"]
+    compile rootProject.ext.dependencies["rxlifecomponents"]
     compile rootProject.ext.dependencies["dagger"]
     annotationProcessor rootProject.ext.dependencies["dagger-compiler"]
 
@@ -69,14 +106,16 @@ dependencies {
     compile rootProject.ext.dependencies["tablayout"]
     compile rootProject.ext.dependencies["androideventbus"]
     compile rootProject.ext.dependencies["gif-drawable"]
+    compile rootProject.ext.dependencies["okhttp"]
     compile rootProject.ext.dependencies["okhttp-logging-interceptor"]
     compile rootProject.ext.dependencies["rxpermissions"]
     compile rootProject.ext.dependencies["litepal"]
     compile 'com.baidu.aip:java-sdk:4.0.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.github.hss01248:DialogUtil:1.2.6'
     testCompile 'junit:junit:4.12'
 }
-repositories {
-    mavenCentral()
-}
+
+    repositories {
+        mavenCentral()
+        google()
+    }

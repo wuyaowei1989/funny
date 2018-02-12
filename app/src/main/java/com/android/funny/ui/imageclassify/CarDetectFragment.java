@@ -47,6 +47,7 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -71,9 +72,10 @@ public class CarDetectFragment extends BaseFragment<ImageClassifyPresenter> impl
     ImageView emptyImg;
     @BindView(R.id.empty_layout)
     ImageView emptyLayout;
+    @BindView(R.id.layout_name_tv)
+    TextView layoutNameTv;
 
     Unbinder unbinder;
-    TextView mTv;
 
     private static final int PICK_REQUEST_CODE = 0;
     private static final int CAMERA_REQUEST_CODE = 1;
@@ -118,6 +120,7 @@ public class CarDetectFragment extends BaseFragment<ImageClassifyPresenter> impl
             @Override
             public void customConvert(BaseViewHolder holder, CarDetectBean.ResultBean item) {
                 holder.setText(R.id.dish_name, item.getName())
+                        .setText(R.id.name_tv, "车名： ")
                         .setText(R.id.dish_calorie, item.getYear())
                         .setText(R.id.calorie_tv, "年份： ")
                         .setVisible(R.id.color_layout, true)
@@ -137,7 +140,8 @@ public class CarDetectFragment extends BaseFragment<ImageClassifyPresenter> impl
                 ShareUtils.shareText(getContext(), mDetectDataList.get(position).getName());
             }
         });
-        mPresenter.getImageList("高清汽车图片", 0, 10);
+        Random random = new Random();
+        mPresenter.getImageList("高清汽车图片", random.nextInt(8), 30);
     }
 
     private void setCardAdapter() {
@@ -224,6 +228,7 @@ public class CarDetectFragment extends BaseFragment<ImageClassifyPresenter> impl
         // TODO: inflate a fragment view
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         unbinder = ButterKnife.bind(this, rootView);
+        layoutNameTv.setText("汽车识别");
         mPhotoFile = new File(IMAGE_FILE_PATH);
         return rootView;
     }
@@ -254,7 +259,8 @@ public class CarDetectFragment extends BaseFragment<ImageClassifyPresenter> impl
                         break;
                     case 2:
                         emptyLayout.setImageBitmap(null);
-                        mPresenter.getImageList("高清美食图片", 1, 30);
+                        Random random = new Random();
+                        mPresenter.getImageList("高清汽车图片", random.nextInt(15), 30);
                         StyledDialog.dismiss();
                         break;
                     case 3:
@@ -356,7 +362,7 @@ public class CarDetectFragment extends BaseFragment<ImageClassifyPresenter> impl
         emptyLayout.setImageBitmap(bitmap);
         String img = BitmapUtils.base64Encode(BitmapUtils.bitmapToByte(bitmap));
         showLoadingDialog();
-        mPresenter.dishDetect(mAccessToken, img, 5, 0.95f);
+        mPresenter.carDetect(mAccessToken, img, 3);
     }
 
 
