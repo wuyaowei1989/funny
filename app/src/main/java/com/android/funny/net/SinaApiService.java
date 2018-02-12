@@ -3,8 +3,10 @@ package com.android.funny.net;
 import com.android.funny.bean.MoveListBean;
 
 import io.reactivex.Observable;
+import okhttp3.RequestBody;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.Query;
+import retrofit2.http.Header;
 
 /**
  * Created by Administrator on 2018/1/27.
@@ -12,11 +14,7 @@ import retrofit2.http.Query;
 
 public interface SinaApiService {
 
-    @GET("movie/in_theaters")
-    Observable<MoveListBean> getMoveList(@Query("apikey") String key,
-                                         @Query("city") String city,
-                                         @Query("start") int start,
-                                         @Query("count") int count,
-                                         @Query("client") String client,
-                                         @Query("udid") String udid);
+    @GET("cgi-bin/pitu_open_access_for_youtu.fcg")
+    Observable<MoveListBean> faceMerge(@Header("Authorization") String appSign,
+                                       @Body RequestBody body);
 }

@@ -1,9 +1,9 @@
 package com.android.funny.net;
 
-import com.android.funny.bean.Constants;
 import com.android.funny.bean.MoveListBean;
 
 import io.reactivex.Observable;
+import okhttp3.RequestBody;
 
 /**
  * Created by Administrator on 2018/1/27.
@@ -26,11 +26,11 @@ public class SinaApi {
     }
 
     /**
-     * 获取视频频道列表
+     * 脸融合
      *
      * @return
      */
-    public Observable<MoveListBean> getMoveList(String city, int start, int counter){
-        return mService.getMoveList(Constants.DOUBAN_ID, city, start, counter, "", "");
+    public Observable<MoveListBean> faceMerge(String appSign, RequestBody body){
+        return mService.faceMerge(appSign, body);
     }
 }

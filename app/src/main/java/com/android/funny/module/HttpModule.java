@@ -16,12 +16,16 @@ import com.android.funny.net.SinaApi;
 import com.android.funny.net.SinaApiService;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.Cache;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -40,6 +44,17 @@ public class HttpModule {
         // 指定缓存路径,缓存大小100Mb
         Cache cache = new Cache(new File(MyApp.getContext().getCacheDir(), "HttpCache"),
                 1024 * 1024 * 100);
+
+        Interceptor headerInterceptor = new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Request original = chain.request();
+                Request request = original.newBuilder()
+                        .addHeader("Content-Type", "text/json")
+                        .build();
+                return chain.proceed(request);
+            }
+        };
         if (BuildConfig.DEBUG) {
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -48,6 +63,7 @@ public class HttpModule {
                     .addInterceptor(RetrofitConfig.sLoggingInterceptor)
                     .addInterceptor(RetrofitConfig.sRewriteCacheControlInterceptor)
                     .addInterceptor(loggingInterceptor)
+                    .addInterceptor(headerInterceptor)
                     .addNetworkInterceptor(RetrofitConfig.sRewriteCacheControlInterceptor)
                     .connectTimeout(10, TimeUnit.SECONDS);
         } else {
@@ -56,6 +72,7 @@ public class HttpModule {
                     .addInterceptor(RetrofitConfig.sLoggingInterceptor)
                     .addInterceptor(RetrofitConfig.sRewriteCacheControlInterceptor)
                     .addNetworkInterceptor(RetrofitConfig.sRewriteCacheControlInterceptor)
+                    .addInterceptor(headerInterceptor)
                     .connectTimeout(10, TimeUnit.SECONDS);
         }
     }
