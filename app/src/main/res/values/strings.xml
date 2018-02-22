@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">趣玩</string>
+    <string name="app_name">AI识图</string>
 
     <!-- 状态视图  -->
     <string name="loading">加载中...</string>

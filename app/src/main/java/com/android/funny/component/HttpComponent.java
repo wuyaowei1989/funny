@@ -6,7 +6,6 @@ import com.android.funny.ui.jandan.JdDetailFragment;
 import com.android.funny.ui.news.ArticleReadActivity;
 import com.android.funny.ui.news.ImageBrowseActivity;
 import com.android.funny.ui.news.NewsFragment;
-import com.android.funny.ui.sinavideo.SinaVideoFragment;
 import com.android.funny.ui.video.DetailFragment;
 import com.android.funny.ui.video.VideoFragment;
 
@@ -33,8 +32,6 @@ public interface HttpComponent {
     void inject(ArticleReadActivity articleReadActivity);
 
     void inject(NewsFragment newsFragment);
-
-    void inject(SinaVideoFragment sinaVideoFragment);
 
     void inject(ImageClassifyFragment imageClassifyFragment);
 
