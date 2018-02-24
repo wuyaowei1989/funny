@@ -83,9 +83,6 @@ public class PersonalFragment extends BaseFragment {
     @OnClick({R.id.tvUrl, R.id.tvGithubUrl})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.tvUrl:
-               toWeb(getResources().getString(R.string.willUrl));
-                break;
             case R.id.tvGithubUrl:
                 toWeb(getResources().getString(R.string.githubUrl));
                 break;

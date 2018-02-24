@@ -97,4 +97,7 @@ public class Constants {
 
     //banner id 2
     public static final String BannerPosID2 = "1080732076688141";
+
+    //原生广告ID
+    public static final String NativeExpressPosID = "4030830016589172";
 }
