@@ -11,9 +11,11 @@ import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,17 +44,24 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.hss01248.dialog.StyledDialog;
 import com.hss01248.dialog.interfaces.MyItemDialogListener;
+import com.qq.e.ads.banner.ADSize;
+import com.qq.e.ads.banner.AbstractBannerADListener;
+import com.qq.e.ads.banner.BannerView;
+import com.qq.e.comm.util.AdError;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 
@@ -74,8 +83,12 @@ public class CarDetectFragment extends BaseFragment<ImageClassifyPresenter> impl
     ImageView emptyLayout;
     @BindView(R.id.layout_name_tv)
     TextView layoutNameTv;
+    @BindView(R.id.bannerContainer)
+    FrameLayout mBannerContainer;
 
     Unbinder unbinder;
+    ViewGroup bannerContainer;
+    BannerView bv;
 
     private static final int PICK_REQUEST_CODE = 0;
     private static final int CAMERA_REQUEST_CODE = 1;
@@ -114,6 +127,10 @@ public class CarDetectFragment extends BaseFragment<ImageClassifyPresenter> impl
 
     @Override
     public void bindView(View view, Bundle savedInstanceState) {
+        bannerContainer = (ViewGroup) mBannerContainer;
+        initBanner();
+        bv.loadAD();
+        AdInterval();
         mPresenter.getAccessToken(Constants.BAIDU_AI_AK, Constants.BAIDU_AI_SK);
         setCardAdapter();
         mAdapter = new CustomBaseQuickAdapter<CarDetectBean.ResultBean>(R.layout.item_img_classify, null) {
@@ -142,6 +159,43 @@ public class CarDetectFragment extends BaseFragment<ImageClassifyPresenter> impl
         });
         Random random = new Random();
         mPresenter.getImageList("高清汽车图片", random.nextInt(8), 30);
+    }
+
+    private void initBanner() {
+        this.bv = new BannerView(getActivity(), ADSize.BANNER, Constants.T_APPID, Constants.BannerPosID2);
+        // 注意：如果开发者的banner不是始终展示在屏幕中的话，请关闭自动刷新，否则将导致曝光率过低。
+        // 并且应该自行处理：当banner广告区域出现在屏幕后，再手动loadAD。
+        bv.setRefresh(30);
+        bv.setADListener(new AbstractBannerADListener() {
+
+            @Override
+            public void onNoAD(AdError error) {
+                Log.i(
+                        "AD_DEMO",
+                        String.format("Banner onNoAD，eCode = %d, eMsg = %s", error.getErrorCode(),
+                                error.getErrorMsg()));
+            }
+
+            @Override
+            public void onADReceiv() {
+                Log.i("AD_DEMO", "ONBannerReceive");
+            }
+        });
+        bannerContainer.addView(bv);
+    }
+
+    private void AdInterval() {
+        Observable.interval(3000, 60000, TimeUnit.MILLISECONDS)
+                //延时3000 ，每间隔3000，时间单位
+                .compose(this.<Long>bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Long>() {
+                    @Override
+                    public void accept(Long aLong) throws Exception {
+                        initBanner();
+                        bv.loadAD();
+                    }
+                });
     }
 
     private void setCardAdapter() {

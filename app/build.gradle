@@ -84,7 +84,6 @@ dependencies {
     compile rootProject.ext.dependencies["rxlifecomponents"]
     compile rootProject.ext.dependencies["dagger"]
     annotationProcessor rootProject.ext.dependencies["dagger-compiler"]
-
     compile rootProject.ext.dependencies["rxjava"]
     compile rootProject.ext.dependencies["rxandroid"]
     compile rootProject.ext.dependencies["rxbinding2"]
@@ -113,6 +112,7 @@ dependencies {
     compile 'com.baidu.aip:java-sdk:4.0.0'
     compile 'com.github.hss01248:DialogUtil:1.2.6'
     testCompile 'junit:junit:4.12'
+    implementation files('libs/GDTUnionSDK.TBS.4.15.559.min.jar')
 }
 
     repositories {

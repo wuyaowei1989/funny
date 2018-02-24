@@ -86,4 +86,15 @@ public class Constants {
     //百度
     public static final String BAIDU_GRANT_TYPE = "client_credentials";
 
+    //腾讯媒体位APPID
+    public static final String T_APPID = "1106666285";
+
+    //开屏广告位ID
+    public static final String SplashPosID = "4080735056189059";
+
+    //banner id 1
+    public static final String BannerPosID1 = "3080331036287100";
+
+    //banner id 2
+    public static final String BannerPosID2 = "1080732076688141";
 }
