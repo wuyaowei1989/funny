@@ -5,48 +5,23 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.design.widget.CoordinatorLayout
+    <in.srain.cube.views.ptr.PtrClassicFrameLayout
+        android:id="@+id/mPtrFrameLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true">
 
-        <android.support.design.widget.AppBarLayout
+        <com.android.funny.widget.SimpleMultiStateView
+            android:id="@+id/SimpleMultiStateView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="4dp"
-            android:background="@drawable/md_card"
-            app:elevation="0dp">
+            android:layout_height="match_parent">
 
-            <FrameLayout
-                android:id="@+id/container"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:visibility="gone"
-                app:layout_scrollFlags="scroll" />
-        </android.support.design.widget.AppBarLayout>
-
-        <in.srain.cube.views.ptr.PtrClassicFrameLayout
-            android:id="@+id/mPtrFrameLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerHorizontal="true">
-
-            <com.android.funny.widget.SimpleMultiStateView
-                android:id="@+id/SimpleMultiStateView"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/mRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/mRecyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_centerHorizontal="true"
-                    android:scrollbars="vertical" />
-
-            </com.android.funny.widget.SimpleMultiStateView>
-
-        </in.srain.cube.views.ptr.PtrClassicFrameLayout>
-    </android.support.design.widget.CoordinatorLayout>
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:scrollbars="vertical" />
+        </com.android.funny.widget.SimpleMultiStateView>
+    </in.srain.cube.views.ptr.PtrClassicFrameLayout>
 </FrameLayout>

@@ -46,12 +46,11 @@ public class JdDetailFragment extends BaseFragment<JanDanPresenter> implements J
     RecyclerView mRecyclerView;
     @BindView(R.id.mPtrFrameLayout)
     PtrFrameLayout mPtrFrameLayout;
-    @BindView(R.id.container)
-    FrameLayout mContainer;
 
     private BaseQuickAdapter mAdapter;
     private int pageNum = 1;
     private String type;
+    private View view_Focus;
     private ViewGroup container;
     private NativeExpressAD nativeExpressAD;
     private NativeExpressADView nativeExpressADView;
@@ -85,8 +84,9 @@ public class JdDetailFragment extends BaseFragment<JanDanPresenter> implements J
     @Override
     public void bindView(View view, Bundle savedInstanceState) {
         if (mAdapter instanceof BoredPicAdapter) {
-            mContainer.setVisibility(View.VISIBLE);
-            container = (ViewGroup) mContainer;
+            view_Focus = getView().inflate(getActivity(), R.layout.ad_header_view, null);
+            container = (ViewGroup) view_Focus.findViewById(R.id.container);
+            mAdapter.addHeaderView(view_Focus);
             mNativeExpressADListener = new NativeExpressAD.NativeExpressADListener() {
                 @Override
                 public void onNoAD(AdError adError) {
@@ -161,9 +161,8 @@ public class JdDetailFragment extends BaseFragment<JanDanPresenter> implements J
                 }
             };
             refreshAd();
-        } else {
-            mContainer.setVisibility(View.GONE);
         }
+
         mPtrFrameLayout.disableWhenHorizontalMove(true);
         mPtrFrameLayout.setPtrHandler(new PtrHandler() {
             @Override
