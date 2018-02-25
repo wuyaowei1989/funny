@@ -12,6 +12,9 @@ import com.android.funny.module.HttpModule;
 import com.android.funny.utils.ContextUtils;
 import com.hss01248.dialog.ActivityStackManager;
 import com.hss01248.dialog.StyledDialog;
+import com.tencent.mta.track.StatisticsDataAPI;
+import com.tencent.stat.StatConfig;
+import com.tencent.stat.StatReportStrategy;
 import com.tencent.stat.StatService;
 
 import org.litepal.LitePal;
@@ -47,13 +50,30 @@ public class MyApp extends LitePalApplication {
         LitePal.initialize(this);
         StyledDialog.init(this);
         registCallback();
-        StatService.trackCustomEvent(this, "onCreate", "");
+        StatisticsDataAPI.instance(this);
+        StatService.setContext(this);
+        initMTAConfig(false);
+        // 注册Activity生命周期监控，自动统计时长
+        StatService.registerActivityLifecycleCallbacks(this);
         width = ContextUtils.getSreenWidth(MyApp.getContext());
         height = ContextUtils.getSreenHeight(MyApp.getContext());
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         builder.detectFileUriExposure();
+    }
+
+    private void initMTAConfig(boolean isDebugMode) {
+
+        if (isDebugMode) {
+            StatConfig.setDebugEnable(true);
+
+        } else {
+            StatConfig.setDebugEnable(false);
+            StatConfig.setAutoExceptionCaught(true);
+            StatConfig.setStatSendStrategy(StatReportStrategy.PERIOD);
+            StatConfig.setSendPeriodMinutes(10);
+        }
     }
 
     public static MyApp getInstance() {

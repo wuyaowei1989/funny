@@ -10,12 +10,13 @@ import com.android.funny.ui.base.SupportFragment;
 import com.android.funny.ui.imageclassify.CarDetectFragment;
 import com.android.funny.ui.imageclassify.ImageClassifyFragment;
 import com.android.funny.ui.jandan.JanDanFragment;
-import com.android.funny.ui.personal.PersonalFragment;
 import com.android.funny.ui.news.NewsFragment;
+import com.android.funny.ui.personal.PersonalFragment;
 import com.android.funny.ui.video.VideoFragment;
 import com.android.funny.utils.StatusBarUtil;
 import com.android.funny.widget.BottomBar;
 import com.android.funny.widget.BottomBarTab;
+import com.tencent.stat.StatService;
 
 import butterknife.BindView;
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
@@ -113,10 +114,18 @@ public class MainActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         JCVideoPlayer.releaseAllVideos();
+        StatService.onPause(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // 页面开始
+        StatService.onResume(this);
     }
 }

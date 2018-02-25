@@ -63,6 +63,12 @@
             android:value="应用宝" />
 
         <provider
+            android:name="com.tencent.mid.api.MidProvider"
+            android:authorities="com.tencent.mtademo.TENCENT.MID.V3"
+            android:exported="true" >
+        </provider>
+
+        <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
             android:exported="false"
