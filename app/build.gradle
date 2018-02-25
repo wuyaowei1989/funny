@@ -113,6 +113,7 @@ dependencies {
     compile 'com.github.hss01248:DialogUtil:1.2.6'
     testCompile 'junit:junit:4.12'
     implementation files('libs/GDTUnionSDK.TBS.4.15.559.min.jar')
+    implementation files('libs/mta-android-sdk-3.1.4.jar')
 }
 
     repositories {

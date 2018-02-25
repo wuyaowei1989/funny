@@ -12,6 +12,7 @@ import com.android.funny.module.HttpModule;
 import com.android.funny.utils.ContextUtils;
 import com.hss01248.dialog.ActivityStackManager;
 import com.hss01248.dialog.StyledDialog;
+import com.tencent.stat.StatService;
 
 import org.litepal.LitePal;
 import org.litepal.LitePalApplication;
@@ -46,6 +47,7 @@ public class MyApp extends LitePalApplication {
         LitePal.initialize(this);
         StyledDialog.init(this);
         registCallback();
+        StatService.trackCustomEvent(this, "onCreate", "");
         width = ContextUtils.getSreenWidth(MyApp.getContext());
         height = ContextUtils.getSreenHeight(MyApp.getContext());
 

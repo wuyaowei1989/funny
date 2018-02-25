@@ -54,6 +54,14 @@
 
         </activity>
 
+        <meta-data
+            android:name="TA_APPKEY"
+            android:value="Aqc1106666285" />
+        <!-- 请将value改为APP的发布渠道（市场） < -->
+        <meta-data
+            android:name="InstallChannel"
+            android:value="应用宝" />
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
