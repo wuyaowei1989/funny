@@ -21,6 +21,8 @@ import com.android.funny.component.DaggerHttpComponent;
 import com.android.funny.ui.base.BaseFragment;
 import com.android.funny.widget.CustomLoadMoreView;
 import com.qq.e.ads.cfg.VideoOption;
+import com.qq.e.ads.interstitial.AbstractInterstitialADListener;
+import com.qq.e.ads.interstitial.InterstitialAD;
 import com.qq.e.ads.nativ.ADSize;
 import com.qq.e.ads.nativ.NativeExpressAD;
 import com.qq.e.ads.nativ.NativeExpressADView;
@@ -55,6 +57,7 @@ public class JdDetailFragment extends BaseFragment<JanDanPresenter> implements J
     private NativeExpressAD nativeExpressAD;
     private NativeExpressADView nativeExpressADView;
     private NativeExpressAD.NativeExpressADListener mNativeExpressADListener;
+    InterstitialAD iad;
 
     public JdDetailFragment(BaseQuickAdapter adapter) {
         this.mAdapter = adapter;
@@ -191,6 +194,7 @@ public class JdDetailFragment extends BaseFragment<JanDanPresenter> implements J
             @Override
             public void onLoadMoreRequested() {
                 mPresenter.getData(type, pageNum);
+                showAD();
             }
         }, mRecyclerView);
 
@@ -291,5 +295,32 @@ public class JdDetailFragment extends BaseFragment<JanDanPresenter> implements J
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+    }
+
+    private void showAD() {
+        getIAD().setADListener(new AbstractInterstitialADListener() {
+
+            @Override
+            public void onNoAD(AdError error) {
+                Log.i(
+                        "AD_DEMO",
+                        String.format("LoadInterstitialAd Fail, error code: %d, error msg: %s",
+                                error.getErrorCode(), error.getErrorMsg()));
+            }
+
+            @Override
+            public void onADReceive() {
+                Log.i("AD_DEMO", "onADReceive");
+                iad.show();
+            }
+        });
+        iad.loadAD();
+    }
+
+    private InterstitialAD getIAD() {
+        if (iad == null) {
+            iad = new InterstitialAD(getActivity(), Constants.T_APPID, Constants.InterteristalPosID);
+        }
+        return iad;
     }
 }

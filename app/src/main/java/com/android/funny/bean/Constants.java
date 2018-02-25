@@ -100,4 +100,7 @@ public class Constants {
 
     //原生广告ID
     public static final String NativeExpressPosID = "4030830016589172";
+
+    //插屏广告
+    public static final String InterteristalPosID = "8000333006082133";
 }
