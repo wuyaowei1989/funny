@@ -103,4 +103,6 @@ public class Constants {
 
     //插屏广告
     public static final String InterteristalPosID = "8000333006082133";
+
+    public static final String NativeVideoPosID = "1050130160177968";
 }

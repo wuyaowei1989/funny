@@ -60,6 +60,7 @@ public class JanDanFragment extends BaseFragment {
         strings.add("新鲜事");
         strings.add("无聊图");
         strings.add("段子");
+        strings.add("广告时间");
         mJanDanPagerAdapter = new JanDanPagerAdapter(getChildFragmentManager(), strings);
         mViewpager.setAdapter(mJanDanPagerAdapter);
         mViewpager.setOffscreenPageLimit(1);
@@ -89,6 +90,8 @@ public class JanDanFragment extends BaseFragment {
                     return JdDetailFragment.newInstance(JanDanApi.TYPE_BORED,new BoredPicAdapter(getActivity(),null));
                 case 2:
                     return JdDetailFragment.newInstance(JanDanApi.TYPE_Duan,new JokesAdapter(null));
+                case 3:
+                    return AdListFragment.newInstance();
             }
             return null;
         }

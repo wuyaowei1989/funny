@@ -116,6 +116,7 @@ dependencies {
     implementation files('libs/mta-android-sdk-3.1.4.jar')
     implementation files('libs/mid-sdk-3.73.jar')
     implementation files('libs/track-sdk_v3.1.4.jar')
+    implementation files('libs/android-query-full.0.26.7.jar')
 }
 
     repositories {
