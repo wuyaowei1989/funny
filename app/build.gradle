@@ -110,6 +110,7 @@ dependencies {
     compile rootProject.ext.dependencies["okhttp-logging-interceptor"]
     compile rootProject.ext.dependencies["rxpermissions"]
     compile rootProject.ext.dependencies["litepal"]
+    compile name: 'YoumiSdk_v7.5.1_2018-01-16', ext: 'aar'
     compile 'com.baidu.aip:java-sdk:4.0.0'
     compile 'com.github.hss01248:DialogUtil:1.2.6'
     testCompile 'junit:junit:4.12'
@@ -118,4 +119,7 @@ dependencies {
     repositories {
         mavenCentral()
         google()
+        flatDir {
+            dirs 'libs'
+        }
     }
