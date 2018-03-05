@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.StrictMode;
 
+import com.android.funny.bean.Constants;
 import com.android.funny.component.ApplicationComponent;
 import com.android.funny.component.DaggerApplicationComponent;
 import com.android.funny.module.ApplicationModule;
@@ -16,6 +17,7 @@ import com.hss01248.dialog.StyledDialog;
 import org.litepal.LitePal;
 import org.litepal.LitePalApplication;
 
+import abc.abc.abc.AdManager;
 import cn.bingoogolapple.swipebacklayout.BGASwipeBackManager;
 
 /**
@@ -52,6 +54,8 @@ public class MyApp extends LitePalApplication {
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         builder.detectFileUriExposure();
+
+        AdManager.getInstance(getContext()).init(Constants.YOUMI_APP_ID, Constants.YOUMI_APP_SEC, true);
     }
 
     public static MyApp getInstance() {

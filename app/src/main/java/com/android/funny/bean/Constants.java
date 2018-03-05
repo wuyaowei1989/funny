@@ -86,4 +86,8 @@ public class Constants {
     //百度
     public static final String BAIDU_GRANT_TYPE = "client_credentials";
 
+    //有米ID
+    public static final String YOUMI_APP_ID = "6a908cae87730f68";
+
+    public static final String YOUMI_APP_SEC = "bb240dbdf6eec988";
 }
