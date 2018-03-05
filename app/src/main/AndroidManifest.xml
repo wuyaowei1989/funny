@@ -100,7 +100,7 @@
         <!-- 请务必修改 android:authorities 为贵应用的标识，一般为 包名.fileProvider -->
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.youmi.android.addemo.fileProvider"
+            android:authorities="com.android.funny.fileProvider"
             android:exported="false"
             android:grantUriPermissions="true" >
 

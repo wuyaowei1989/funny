@@ -22,7 +22,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginRight="10.0dip"
         android:layout_marginTop="8.0dip"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tv_skip"

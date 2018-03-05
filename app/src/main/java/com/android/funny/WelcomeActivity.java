@@ -27,10 +27,7 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
-import io.reactivex.observers.DisposableObserver;
 
 
 public class WelcomeActivity extends BaseActivity {
@@ -141,7 +138,7 @@ public class WelcomeActivity extends BaseActivity {
      */
     private void runApp() {
         preloadAd();
-        setupSplashAd(); // 如果需要首次展示开屏，请注释掉本句代码
+//        setupSplashAd(); // 如果需要首次展示开屏，请注释掉本句代码
     }
 
     /**
@@ -155,7 +152,7 @@ public class WelcomeActivity extends BaseActivity {
                 Log.i(TAG, "请求插播广告成功");
                 //				// 应用安装后首次展示开屏会因为本地没有数据而跳过
                 //              // 如果开发者需要在首次也能展示开屏，可以在请求广告成功之前展示应用的logo，请求成功后再加载开屏
-                //				setupSplashAd();
+                				setupSplashAd();
             }
 
             @Override
@@ -198,27 +195,27 @@ public class WelcomeActivity extends BaseActivity {
                     @Override
                     public void onShowSuccess() {
                         Log.i(TAG, "开屏展示成功");
-                        mCompositeDisposable.add(countDown(3).doOnSubscribe(new Consumer<Disposable>() {
-                            @Override
-                            public void accept(@NonNull Disposable disposable) throws Exception {
-                                tvSkip.setText("跳过 4");
-                            }
-                        }).subscribeWith(new DisposableObserver<Integer>() {
-                            @Override
-                            public void onNext(Integer integer) {
-                                tvSkip.setText("跳过 " + (integer + 1));
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-
-                            }
-
-                            @Override
-                            public void onComplete() {
-                                toMain();
-                            }
-                        }));
+//                        mCompositeDisposable.add(countDown(3).doOnSubscribe(new Consumer<Disposable>() {
+//                            @Override
+//                            public void accept(@NonNull Disposable disposable) throws Exception {
+//                                tvSkip.setText("跳过 4");
+//                            }
+//                        }).subscribeWith(new DisposableObserver<Integer>() {
+//                            @Override
+//                            public void onNext(Integer integer) {
+//                                tvSkip.setText("跳过 " + (integer + 1));
+//                            }
+//
+//                            @Override
+//                            public void onError(Throwable e) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onComplete() {
+//                                toMain();
+//                            }
+//                        }));
                     }
 
                     @Override
