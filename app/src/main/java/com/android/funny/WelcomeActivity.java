@@ -10,17 +10,20 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.funny.bean.Constants;
 import com.android.funny.component.ApplicationComponent;
 import com.android.funny.ui.base.BaseActivity;
 import com.android.funny.utils.PermissionHelper;
 
 import java.util.concurrent.TimeUnit;
 
+import abc.abc.abc.AdManager;
 import abc.abc.abc.nm.cm.ErrorCode;
 import abc.abc.abc.nm.sp.SplashViewSettings;
 import abc.abc.abc.nm.sp.SpotListener;
 import abc.abc.abc.nm.sp.SpotManager;
 import abc.abc.abc.nm.sp.SpotRequestListener;
+import abc.abc.abc.nm.vdo.VideoAdManager;
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.Observable;
@@ -137,6 +140,7 @@ public class WelcomeActivity extends BaseActivity {
      * 跑应用的逻辑
      */
     private void runApp() {
+        AdManager.getInstance(getApplicationContext()).init(Constants.YOUMI_APP_ID, Constants.YOUMI_APP_SEC, true);
         preloadAd();
 //        setupSplashAd(); // 如果需要首次展示开屏，请注释掉本句代码
     }
@@ -169,7 +173,6 @@ public class WelcomeActivity extends BaseActivity {
                         Toast.makeText(getApplicationContext(), "请稍后再试", Toast.LENGTH_SHORT).show();
                         break;
                 }
-                toMain();
             }
         });
     }
@@ -241,13 +244,11 @@ public class WelcomeActivity extends BaseActivity {
                                 Log.i(TAG,"errorCode: "+ errorCode);
                                 break;
                         }
-                        toMain();
                     }
 
                     @Override
                     public void onSpotClosed() {
                         Log.i(TAG,"开屏被关闭");
-                        toMain();
                     }
 
                     @Override

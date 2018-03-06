@@ -54,8 +54,6 @@ public class MyApp extends LitePalApplication {
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         builder.detectFileUriExposure();
-
-        AdManager.getInstance(getContext()).init(Constants.YOUMI_APP_ID, Constants.YOUMI_APP_SEC, true);
     }
 
     public static MyApp getInstance() {

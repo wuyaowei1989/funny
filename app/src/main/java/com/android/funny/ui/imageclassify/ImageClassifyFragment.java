@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.funny.R;
@@ -71,6 +72,8 @@ public class ImageClassifyFragment extends BaseFragment<ImageClassifyPresenter> 
     ImageView emptyImg;
     @BindView(R.id.empty_layout)
     ImageView emptyLayout;
+    @BindView(R.id.ll_banner)
+    LinearLayout bannerLayout;
 
     Unbinder unbinder;
 

@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +50,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import abc.abc.abc.nm.bn.BannerManager;
+import abc.abc.abc.nm.bn.BannerViewListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -74,6 +77,8 @@ public class CarDetectFragment extends BaseFragment<ImageClassifyPresenter> impl
     ImageView emptyLayout;
     @BindView(R.id.layout_name_tv)
     TextView layoutNameTv;
+    @BindView(R.id.ll_banner)
+    LinearLayout bannerLayout;
 
     Unbinder unbinder;
 
@@ -142,6 +147,28 @@ public class CarDetectFragment extends BaseFragment<ImageClassifyPresenter> impl
         });
         Random random = new Random();
         mPresenter.getImageList("高清汽车图片", random.nextInt(8), 30);
+
+        // 获取广告条
+        View bannerView = BannerManager.getInstance(getContext())
+                .getBannerView(getContext(), new BannerViewListener() {
+                    @Override
+                    public void onRequestSuccess() {
+
+                    }
+
+                    @Override
+                    public void onSwitchBanner() {
+
+                    }
+
+                    @Override
+                    public void onRequestFailed() {
+
+                    }
+                });
+
+        // 将广告条加入到布局中
+        bannerLayout.addView(bannerView);
     }
 
     private void setCardAdapter() {
@@ -237,6 +264,7 @@ public class CarDetectFragment extends BaseFragment<ImageClassifyPresenter> impl
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        BannerManager.getInstance(getContext()).onDestroy();
     }
 
     private void showDialog() {
