@@ -8,18 +8,17 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
-import com.android.funny.bean.Constants;
-import com.android.funny.ui.adapter.BoredPicAdapter;
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.android.funny.R;
+import com.android.funny.bean.Constants;
 import com.android.funny.bean.FreshNewsBean;
 import com.android.funny.bean.JdDetailBean;
 import com.android.funny.component.ApplicationComponent;
 import com.android.funny.component.DaggerHttpComponent;
+import com.android.funny.ui.adapter.BoredPicAdapter;
 import com.android.funny.ui.base.BaseFragment;
 import com.android.funny.widget.CustomLoadMoreView;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.qq.e.ads.cfg.VideoOption;
 import com.qq.e.ads.interstitial.AbstractInterstitialADListener;
 import com.qq.e.ads.interstitial.InterstitialAD;
@@ -29,11 +28,14 @@ import com.qq.e.ads.nativ.NativeExpressADView;
 import com.qq.e.comm.util.AdError;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrHandler;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * desc: .
@@ -164,6 +166,7 @@ public class JdDetailFragment extends BaseFragment<JanDanPresenter> implements J
                 }
             };
             refreshAd();
+            AdInterval();
         }
 
         mPtrFrameLayout.disableWhenHorizontalMove(true);
@@ -198,6 +201,16 @@ public class JdDetailFragment extends BaseFragment<JanDanPresenter> implements J
             }
         }, mRecyclerView);
 
+    }
+
+    private void AdInterval() {
+        Observable.interval(30000, 30000, TimeUnit.MILLISECONDS)
+                //延时3000 ，每间隔3000，时间单位
+                .compose(this.<Long>bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aLong -> {
+                    refreshAd();
+                });
     }
 
     @Override

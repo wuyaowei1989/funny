@@ -105,4 +105,7 @@ public class Constants {
     public static final String InterteristalPosID = "8000333006082133";
 
     public static final String NativeVideoPosID = "1050130160177968";
+
+    //详情页广告
+    public static final String DetailNativePosID = "7040834144472544";
 }

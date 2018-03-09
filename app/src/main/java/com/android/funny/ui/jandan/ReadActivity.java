@@ -2,18 +2,23 @@ package com.android.funny.ui.jandan;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.funny.R;
+import com.android.funny.bean.Constants;
 import com.android.funny.bean.FreshNewsArticleBean;
 import com.android.funny.bean.FreshNewsBean;
 import com.android.funny.component.ApplicationComponent;
@@ -22,16 +27,26 @@ import com.android.funny.net.JanDanApi;
 import com.android.funny.net.RxSchedulers;
 import com.android.funny.ui.base.BaseActivity;
 import com.android.funny.utils.DateUtil;
-import com.android.funny.utils.ImageLoaderUtil;
 import com.android.funny.utils.StatusBarUtil;
+import com.qq.e.ads.cfg.VideoOption;
+import com.qq.e.ads.interstitial.AbstractInterstitialADListener;
+import com.qq.e.ads.interstitial.InterstitialAD;
+import com.qq.e.ads.nativ.ADSize;
+import com.qq.e.ads.nativ.NativeExpressAD;
+import com.qq.e.ads.nativ.NativeExpressADView;
+import com.qq.e.comm.util.AdError;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class ReadActivity extends BaseActivity {
     private static final String DATA = "data";
-    @BindView(R.id.iv_logo)
-    ImageView mIvTop;
     @BindView(R.id.tv_title)
     TextView mTvTitle;
     @BindView(R.id.tv_author)
@@ -53,14 +68,19 @@ public class ReadActivity extends BaseActivity {
     ImageView mIvShare;
     @BindView(R.id.iv_comment)
     ImageView mIvComment;
+    @BindView(R.id.container)
+    FrameLayout mContainer;
 
+    private ViewGroup container;
+    private NativeExpressAD nativeExpressAD;
+    private NativeExpressADView nativeExpressADView;
+    private NativeExpressAD.NativeExpressADListener mNativeExpressADListener;
+    InterstitialAD iad;
 
     public static void launch(Context context, FreshNewsBean.PostsBean postsBean, View view) {
         Intent intent = new Intent(context, ReadActivity.class);
         intent.putExtra(DATA, postsBean);
         context.startActivity(intent);
-//        context.startActivity(intent,
-//                ActivityOptions.makeSceneTransitionAnimation((Activity) context, view, "topview").toBundle());
     }
 
     @Override
@@ -85,9 +105,149 @@ public class ReadActivity extends BaseActivity {
                 + "  "
                 + DateUtil.getTimestampString(DateUtil.string2Date(postsBean.getDate(), "yyyy-MM-dd HH:mm:ss")));
         mTvExcerpt.setText(postsBean.getExcerpt());
-        ImageLoaderUtil.LoadImage(this, postsBean.getCustom_fields().getThumb_c().get(0), mIvTop);
         showSuccess();
         setWebViewSetting();
+
+        container = (ViewGroup)mContainer;
+        mNativeExpressADListener = new NativeExpressAD.NativeExpressADListener() {
+            @Override
+            public void onNoAD(AdError adError) {
+                Log.i(
+                        "AD_demo",
+                        String.format("onNoAD, error code: %d, error msg: %s", adError.getErrorCode(),
+                                adError.getErrorMsg()));
+            }
+
+            @Override
+            public void onADLoaded(List<NativeExpressADView> list) {
+                // 释放前一个展示的NativeExpressADView的资源
+                if (nativeExpressADView != null) {
+                    nativeExpressADView.destroy();
+                }
+
+                if (container.getVisibility() != View.VISIBLE) {
+                    container.setVisibility(View.VISIBLE);
+                }
+
+                if (container.getChildCount() > 0) {
+                    container.removeAllViews();
+                }
+
+                nativeExpressADView = list.get(0);
+                // 广告可见才会产生曝光，否则将无法产生收益。
+                container.addView(nativeExpressADView);
+                nativeExpressADView.render();
+            }
+
+            @Override
+            public void onRenderFail(NativeExpressADView nativeExpressADView) {
+                Log.i("AD_demo", "onRenderFail");
+            }
+
+            @Override
+            public void onRenderSuccess(NativeExpressADView nativeExpressADView) {
+                Log.i("AD_demo", "onRenderSuccess");
+            }
+
+            @Override
+            public void onADExposure(NativeExpressADView nativeExpressADView) {
+                Log.i("AD_demo", "onADExposure");
+            }
+
+            @Override
+            public void onADClicked(NativeExpressADView nativeExpressADView) {
+                Log.i("AD_demo", "onADClicked");
+            }
+
+            @Override
+            public void onADClosed(NativeExpressADView nativeExpressADView) {
+                if (container != null && container.getChildCount() > 0) {
+                    container.removeAllViews();
+                    container.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onADLeftApplication(NativeExpressADView nativeExpressADView) {
+
+            }
+
+            @Override
+            public void onADOpenOverlay(NativeExpressADView nativeExpressADView) {
+
+            }
+
+            @Override
+            public void onADCloseOverlay(NativeExpressADView nativeExpressADView) {
+
+            }
+        };
+        refreshAd();
+        AdInterval();
+    }
+
+    private void refreshAd() {
+        /**
+         *  如果选择支持视频的模版样式，请使用{@link Constants#NativeExpressSupportVideoPosID}
+         */
+        nativeExpressAD = new NativeExpressAD(this, getMyADSize(), Constants.T_APPID, Constants.NativeExpressPosID, mNativeExpressADListener); // 这里的Context必须为Activity
+        nativeExpressAD.setVideoOption(new VideoOption.Builder()
+                .setAutoPlayPolicy(VideoOption.AutoPlayPolicy.WIFI) // 设置什么网络环境下可以自动播放视频
+                .setAutoPlayMuted(true) // 设置自动播放视频时，是否静音
+                .build()); // setVideoOption是可选的，开发者可根据需要选择是否配置
+        nativeExpressAD.loadAD(1);
+    }
+
+    private ADSize getMyADSize() {
+        int w = ADSize.FULL_WIDTH;
+        int h = ADSize.AUTO_HEIGHT;
+        return new ADSize(w, h);
+    }
+
+    private void AdInterval() {
+        Observable.interval(30000, 30000, TimeUnit.MILLISECONDS)
+                //延时3000 ，每间隔3000，时间单位
+                .compose(this.<Long>bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aLong -> {
+                    refreshAd();
+                });
+    }
+    /**
+     * 注意：带有视频的广告被点击后会进入全屏播放视频，此时视频可以跟随屏幕方向的旋转而旋转，
+     * 请开发者注意处理好自己的Activity的运行时变更，不要让Activity销毁。
+     * 例如，在AndroidManifest文件中给Activity添加属性android:configChanges="keyboard|keyboardHidden|orientation|screenSize"，
+     */
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
+    private void showAD() {
+        getIAD().setADListener(new AbstractInterstitialADListener() {
+
+            @Override
+            public void onNoAD(AdError error) {
+                Log.i(
+                        "AD_DEMO",
+                        String.format("LoadInterstitialAd Fail, error code: %d, error msg: %s",
+                                error.getErrorCode(), error.getErrorMsg()));
+            }
+
+            @Override
+            public void onADReceive() {
+                Log.i("AD_DEMO", "onADReceive");
+                iad.show();
+            }
+        });
+        iad.loadAD();
+    }
+
+    private InterstitialAD getIAD() {
+        if (iad == null) {
+            iad = new InterstitialAD(this, Constants.T_APPID, Constants.DetailNativePosID);
+        }
+        return iad;
     }
 
     @Override
@@ -174,5 +334,12 @@ public class ReadActivity extends BaseActivity {
             case R.id.iv_comment:
                 break;
         }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
 }
