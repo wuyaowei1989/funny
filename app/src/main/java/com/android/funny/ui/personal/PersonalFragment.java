@@ -243,7 +243,7 @@ public class PersonalFragment extends BaseFragment {
     public boolean onBackPressedSupport() {
         if (flAd.getVisibility() == View.VISIBLE) {
             flAd.setVisibility(View.GONE);
-            return false;
+            return true;
         }
         return super.onBackPressedSupport();
     }
