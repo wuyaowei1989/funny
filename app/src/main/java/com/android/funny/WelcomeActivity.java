@@ -249,12 +249,16 @@ public class WelcomeActivity extends BaseActivity {
                     @Override
                     public void onSpotClosed() {
                         Log.i(TAG,"开屏被关闭");
+                        toMain();
+                        finish();
                     }
 
                     @Override
                     public void onSpotClicked(boolean isWebPage) {
                         Log.i(TAG,"开屏被点击");
                         Log.i(TAG,"是否是网页广告？" + (isWebPage ? "是" : "不是"));
+                        toMain();
+                        finish();
                     }
                 });
     }
