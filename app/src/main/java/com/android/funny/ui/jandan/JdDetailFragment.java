@@ -204,7 +204,7 @@ public class JdDetailFragment extends BaseFragment<JanDanPresenter> implements J
     }
 
     private void AdInterval() {
-        Observable.interval(90000, 90000, TimeUnit.MILLISECONDS)
+        Observable.interval(50000, 5000, TimeUnit.MILLISECONDS)
                 //延时3000 ，每间隔3000，时间单位
                 .compose(this.<Long>bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())

@@ -185,7 +185,7 @@ public class CarDetectFragment extends BaseFragment<ImageClassifyPresenter> impl
     }
 
     private void AdInterval() {
-        Observable.interval(3000, 60000, TimeUnit.MILLISECONDS)
+        Observable.interval(50000, 50000, TimeUnit.MILLISECONDS)
                 //延时3000 ，每间隔3000，时间单位
                 .compose(this.<Long>bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
